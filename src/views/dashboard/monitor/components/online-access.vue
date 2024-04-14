@@ -16,7 +16,7 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import dayjs from "dayjs";
 const time = ref();

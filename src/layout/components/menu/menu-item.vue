@@ -1,6 +1,6 @@
 <template>
   <el-menu-item :index="item.name" class="menu-item">
-    <i v-if="item.meta?.icon || isItemMustIcon" class="icon">
+    <i class="icon" v-if="item.meta?.icon || isItemMustIcon">
       <Icon :icon="item.meta?.icon ? item.meta.icon : 'ep:link'" />
     </i>
     <template #title>
@@ -9,16 +9,31 @@
   </el-menu-item>
 </template>
 
-<script setup>
-import { computed, getCurrentInstance, inject, onMounted } from "vue";
+<script lang="ts" setup>
+import {
+  ComponentInternalInstance,
+  computed,
+  getCurrentInstance,
+  inject,
+  onMounted,
+  PropType,
+} from "vue";
 import { Icon } from "@iconify/vue";
 import { useLayoutStore } from "@/store";
 import { useI18n } from "vue-i18n";
 import { routeI18n } from "@/locale";
-const props = defineProps({ item: Object });
+import { MENU_CONTEXT_KEY, MenuProvider } from "./constants.ts";
+import type { MenuData } from "@/router/constants.ts";
+
+const props = defineProps({
+  item: {
+    type: Object as PropType<MenuData>,
+    default: () => {},
+  },
+});
 const i18n = useI18n();
-const instance = getCurrentInstance();
-const menuContext = inject("menu");
+const instance: ComponentInternalInstance | null = getCurrentInstance();
+const menuContext = inject<MenuProvider>(MENU_CONTEXT_KEY);
 const layoutStore = useLayoutStore();
 
 const isItemMustIcon = computed(() => {
@@ -30,12 +45,12 @@ const title = computed(() => {
 });
 
 onMounted(() => {
-  const el = instance.subTree?.el;
+  const el = instance?.subTree?.el;
   if (el) {
     el.addEventListener(
       "click",
-      (e) => {
-        menuContext.onItemClick(props.item, e);
+      (e: Event) => {
+        menuContext?.onItemClick(props.item, e);
       },
       { capture: true },
     );
@@ -43,4 +58,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped lang="scss"></style>

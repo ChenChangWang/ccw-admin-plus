@@ -12,8 +12,8 @@
   </div>
 </template>
 
-<script setup>
-import { reactive, ref } from "vue";
+<script lang="ts" setup>
+import { reactive } from "vue";
 import { List, ListItem, ListItemMeta } from "@/components/list";
 
 const list = [
@@ -33,6 +33,7 @@ const list = [
     key: "todo",
   },
 ];
+
 const switchData = reactive({ use: true, system: true, todo: true });
 </script>
 

@@ -10,16 +10,16 @@
   />
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import Menu from "@/layout/components/menu/index.vue";
 import { useLayoutStore, useRouterStore } from "@/store";
-import { useRoute } from "vue-router";
+import { RouteRecordNormalized, useRoute } from "vue-router";
+import type { MenuData } from "@/router/constants.ts";
 
 const layoutStore = useLayoutStore();
 const routerStore = useRouterStore();
 const route = useRoute();
-
 const menuList = computed(() => {
   if (layoutStore.menuLayoutModeMix) {
     return routerStore.menuList.map((item) => {
@@ -30,7 +30,6 @@ const menuList = computed(() => {
     return routerStore.menuList;
   }
 });
-
 const menuActiveRoute = computed(() => {
   if (layoutStore.menuLayoutModeMix) {
     const matched = route.matched;
@@ -40,11 +39,16 @@ const menuActiveRoute = computed(() => {
   }
 });
 
-const updLeftMenuList = (data) => {
-  const leftMenuList = routerStore.menuList.find((item) => {
-    return item.path === data.path;
-  })?.children;
-  layoutStore.updatePatch({ mixLeftMenuList: leftMenuList });
+const updLeftMenuList = (data: RouteRecordNormalized | MenuData) => {
+  const leftMenuList: MenuData[] | undefined = routerStore.menuList.find(
+    (item) => {
+      return item.path === data.path;
+    },
+  )?.children;
+
+  layoutStore.updatePatch({
+    mixLeftMenuList: leftMenuList,
+  });
 };
 
 const init = () => {
@@ -52,10 +56,11 @@ const init = () => {
     updLeftMenuList(route.matched[0]);
   }
 };
+
 init();
 
 // 递归查找第一个叶子节点
-function findFirstLeafNode(data) {
+function findFirstLeafNode(data: MenuData) {
   if (!data.children || data.children.length === 0) {
     return data;
   } else {
@@ -66,7 +71,7 @@ function findFirstLeafNode(data) {
   }
 }
 
-const beforeItemClick = (data, isLink, event) => {
+const beforeItemClick = (data: MenuData, isLink: boolean, event: Event) => {
   //混合模式   跳转到第一个路由
   if (layoutStore.menuLayoutModeMix) {
     if (!isLink) {

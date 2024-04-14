@@ -5,15 +5,16 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import logo from "@/assets/images/logo.png";
 import { useRouter } from "vue-router";
 
-const props = defineProps({
+defineProps({
   collapse: Boolean,
 });
+
 const router = useRouter();
+
 const toHome = () => {
   router.push({ path: "/" });
 };

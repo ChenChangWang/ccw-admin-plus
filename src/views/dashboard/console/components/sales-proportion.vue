@@ -26,14 +26,18 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from "vue";
 import VChart from "vue-echarts";
-
 import useLoading from "@/hooks/use-loading";
-import { getSalesProportionData } from "@/api/dashboard";
+import {
+  getSalesProportionData,
+  SalesProportionData,
+  SalesProportionParam,
+} from "@/api/dashboard";
 import { Icon } from "@iconify/vue";
-const optionData = ref([]);
+
+const optionData = ref<SalesProportionData[]>([]);
 const type = ref("all");
 const option = computed(() => {
   return {
@@ -56,19 +60,22 @@ const option = computed(() => {
   };
 });
 const [loading, setLoading] = useLoading(true);
+
 const fetchData = async () => {
   setLoading(true);
   try {
-    const { data } = await getSalesProportionData({
+    const { data } = await getSalesProportionData(<SalesProportionParam>{
       type: type.value,
     });
-    optionData.value = data.data;
+    optionData.value = data;
   } catch (err) {
   } finally {
     setLoading(false);
   }
 };
+
 fetchData();
+
 const change = () => {
   fetchData();
 };

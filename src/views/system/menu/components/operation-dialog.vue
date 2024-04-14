@@ -1,25 +1,25 @@
 <template>
-  <el-dialog v-model="model" class="menu-dialog" width="720px">
+  <el-dialog v-model="model" width="720px" class="menu-dialog">
     <template #header>
       <span class="el-dialog__title">
         {{ title }}
       </span>
     </template>
     <el-form
+      class="full-form"
       ref="ruleFormRef"
-      :disabled="mode === 'view'"
       :model="form"
       :rules="rules"
-      class="full-form"
       label-width="100px"
       status-icon
+      :disabled="mode === 'view'"
     >
       <el-form-item label="上级菜单:" prop="parentIds">
         <el-cascader
-          v-model="form.parentIds"
           :disabled="mode === 'addChild'"
           :options="options"
           :props="upMenuProps"
+          v-model="form.parentIds"
           :show-all-levels="true"
         />
       </el-form-item>
@@ -28,14 +28,14 @@
         <el-input v-model="form.menuName" placeholder="菜单名称" />
       </el-form-item>
 
-      <el-form-item v-show="!btnType" label="隐藏侧边栏:" prop="hideInMenu">
+      <el-form-item label="隐藏侧边栏:" prop="hideInMenu" v-show="!btnType">
         <el-radio-group v-model="form.hideInMenu">
           <el-radio-button :value="true">隐藏</el-radio-button>
           <el-radio-button :value="false">显示</el-radio-button>
         </el-radio-group>
       </el-form-item>
 
-      <div v-show="!btnType" class="half-content">
+      <div class="half-content" v-show="!btnType">
         <el-form-item label="菜单图标:" prop="icon">
           <IconSelector v-model="form.icon" />
         </el-form-item>
@@ -43,33 +43,33 @@
 
       <el-form-item label="菜单类型:" prop="menuType">
         <el-radio-group v-model="form.menuType">
-          <el-radio v-if="mode !== 'addChild'" value="top"> 目录 </el-radio>
+          <el-radio value="top" v-if="mode !== 'addChild'"> 目录 </el-radio>
           <el-radio value="menu">菜单</el-radio>
           <el-radio value="btn">按钮</el-radio>
         </el-radio-group>
       </el-form-item>
 
       <div class="half-content">
-        <el-form-item v-show="isPath" :label="pathLabel" prop="path">
+        <el-form-item :label="pathLabel" prop="path" v-show="isPath">
           <el-input v-model="form.path" :placeholder="pathLabel" />
         </el-form-item>
-        <el-form-item v-show="!btnType" label="是否外链:" prop="isLink">
+        <el-form-item label="是否外链:" prop="isLink" v-show="!btnType">
           <el-radio-group v-model="form.isLink">
             <el-radio :value="true">是</el-radio>
             <el-radio :value="false">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          v-show="form.menuType === 'menu'"
           label="路由参数:"
           prop="query"
+          v-show="form.menuType === 'menu'"
         >
           <el-input v-model="form.query" placeholder="路由参数" />
         </el-form-item>
         <el-form-item
-          v-show="form.menuType === 'menu'"
           label="是否缓存:"
           prop="isCache"
+          v-show="form.menuType === 'menu'"
         >
           <el-radio-group v-model="form.isCache">
             <el-radio :value="true">是</el-radio>
@@ -84,16 +84,16 @@
           />
         </el-form-item>
         <el-form-item
-          v-show="form.menuType !== 'top'"
           label="权限标识:"
           prop="permission"
+          v-show="form.menuType !== 'top'"
         >
           <el-input v-model="form.permission" placeholder="权限标识" />
         </el-form-item>
-        <el-form-item v-show="isComponent" label="组件路径:" prop="component">
+        <el-form-item label="组件路径:" prop="component" v-show="isComponent">
           <el-input v-model="form.component" placeholder="组件路径" />
         </el-form-item>
-        <el-form-item v-show="!btnType" label="状态:" prop="status">
+        <el-form-item label="状态:" prop="status" v-show="!btnType">
           <el-radio-group v-model="form.status" :disabled="btnType">
             <el-radio :value="true">正常</el-radio>
             <el-radio :value="false">停用</el-radio>
@@ -110,10 +110,12 @@
   </el-dialog>
 </template>
 
-<script setup>
-import { onMounted, ref, reactive, watch, computed, nextTick } from "vue";
-import { getMenuList } from "@/api/system";
+<script lang="ts" setup>
+import { ref, reactive, watch, computed, nextTick, PropType } from "vue";
+import { getMenuList, SystemMenuData } from "@/api/system";
 import IconSelector from "@/components/icon-selector/index.vue";
+import {FormInstance} from "element-plus";
+
 const model = defineModel();
 const upMenuProps = {
   checkStrictly: true,
@@ -121,17 +123,17 @@ const upMenuProps = {
   value: "id",
 };
 const props = defineProps({
-  formData: Object,
+  formData: Object as PropType<SystemMenuData>,
   mode: {
-    type: String,
+    type: String as PropType<"add" | "edit" | "addChild">,
     validator(value, props) {
-      return ["add", "edit", "addChild"].includes(value);
+      return ["add", "edit", "addChild"].includes(<string>value);
     },
   },
 });
 const emit = defineEmits(["onSubmit"]);
-const options = ref([]);
-const ruleFormRef = ref();
+const options = ref<SystemMenuData[]>([]);
+const ruleFormRef = ref<FormInstance>();
 let form = reactive({
   parentIds: "",
   menuName: "",
@@ -148,7 +150,13 @@ let form = reactive({
   status: true,
 });
 
-const rules = reactive({
+const rules = reactive<{
+  parentIds: [Record<string, any>];
+  menuName: [Record<string, any>];
+  orderNum: [Record<string, any>];
+  path: [Record<string, any>];
+  component: [Record<string, any>];
+}>({
   parentIds: [{ required: true, message: "请选择上级菜单", trigger: "change" }],
   menuName: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
   orderNum: [{ required: true, message: "请输入排序", trigger: "blur" }],
@@ -199,15 +207,17 @@ watch(model, (value) => {
   resetForm();
   if (props.mode !== "add") {
     nextTick(() => {
-      Object.keys(props.formData).forEach((key) => {
-        form[key] = props.formData[key];
-      });
+      if (props.formData) {
+        Object.keys(props.formData).forEach((key) => {
+          form[key] = props.formData?.[key];
+        });
+      }
     });
   }
 });
 
 const getMenuData = async () => {
-  const { data } = await getMenuList({});
+  const { data } = await getMenuList();
   options.value = [{ menuName: "主类目", id: 0, isTop: true, children: data }];
 };
 
@@ -224,8 +234,9 @@ const resetForm = () => {
 const onCancel = () => {
   model.value = false;
 };
+
 const onSubmit = async () => {
-  await ruleFormRef.value.validate((valid, fields) => {
+  await ruleFormRef.value?.validate((valid, fields) => {
     if (valid) {
       emit("onSubmit", form);
     } else {

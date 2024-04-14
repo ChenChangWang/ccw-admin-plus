@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import StoreManagement from "./components/store-management.vue";
 import TaskManagement from "./components/task-management.vue";
@@ -33,6 +33,7 @@ import { ElMessage } from "element-plus";
 defineOptions({
   name: "AdvancedForm", //不命名组件，keep-alive的include不属性生效
 });
+
 const storeRef = ref();
 const taskRef = ref();
 const [loading, setLoading] = useLoading(false);
@@ -50,16 +51,18 @@ const onSubmit = () => {
       //校验不通过
     });
 };
+
 const submit = async () => {
   setLoading(true);
   try {
-    const { data } = await userFormSubmit();
+    await userFormSubmit();
     ElMessage.success("操作成功！");
   } catch (err) {
   } finally {
     setLoading(false);
   }
 };
+
 const onReset = () => {
   storeRef.value.resetForm();
   taskRef.value.resetForm();

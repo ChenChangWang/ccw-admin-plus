@@ -6,11 +6,12 @@
   </el-breadcrumb>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { routeI18n } from "@/locale";
+
 const route = useRoute();
 const i18n = useI18n();
 const list = computed(() => {

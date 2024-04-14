@@ -29,8 +29,8 @@
   </el-row>
 </template>
 
-<script setup>
-import { ref, provide, computed } from "vue";
+<script lang="ts" setup>
+import { provide, computed } from "vue";
 import Overview from "./components/overview.vue";
 import RecentSituation from "./components/recent-situation.vue";
 import OnlineAccess from "./components/online-access.vue";

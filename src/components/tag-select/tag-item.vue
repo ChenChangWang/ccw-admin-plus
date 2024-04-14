@@ -4,7 +4,7 @@
   </el-check-tag>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
   defineProps,
   inject,
@@ -13,28 +13,34 @@ import {
   onUnmounted,
   reactive,
   getCurrentInstance,
+  PropType,
 } from "vue";
-import { tagSelectContextKey } from "./constants";
+import {
+  TagItemData,
+  tagSelectContextKey,
+  TagSelectProvider,
+} from "./constants";
+
 defineOptions({
   name: "TagItem",
 });
 const props = defineProps({
-  value: String,
+  value: String as PropType<string>,
 });
-const tagSelect = inject(tagSelectContextKey);
+const tagSelect = inject(tagSelectContextKey) as TagSelectProvider;
 const instance = getCurrentInstance();
 
 const checked = computed(() => {
-  return tagSelect.model.value.some((val) => val === props.value);
+  return tagSelect.model.value?.some((val: string) => val === props.value);
 });
 
-const onChange = (status) => {
-  tagSelect.checkedChange(props.value, status);
+const onChange = (status: boolean) => {
+  tagSelect.checkedChange(props.value!, status);
 };
 
-const tagItem = reactive({
-  uid: instance.uid,
-  value: props.value,
+const tagItem = reactive<TagItemData>({
+  uid: instance?.uid!,
+  value: props.value!,
 });
 
 onMounted(() => {

@@ -16,12 +16,13 @@
   </div>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import ConfigSetting from "./components/config-setting.vue";
 
 const drawerVisible = ref(false);
+
 const setVisible = () => {
   drawerVisible.value = true;
 };

@@ -2,27 +2,30 @@
   <div :class="{ 'tag-select': true, 'tag-select-expanded': !collapse }">
     <el-check-tag
       :checked="allChecked"
-      class="tag-select-item"
       @change="allChange"
+      class="tag-select-item"
       >全部
     </el-check-tag>
     <slot />
     <div class="tag-select-expand-btn" @click="toggleCollapse()">
-      <el-button link type="primary">
+      <el-button type="primary" link>
         {{ collapse ? $t("form.expand") : $t("form.shrink") }}
         <Icon :icon="collapse ? 'uiw:down' : 'uiw:up'" />
       </el-button>
     </div>
   </div>
 </template>
-<script setup>
-import { ref, provide, getCurrentInstance, computed } from "vue";
+<script lang="ts" setup>
+import { ref, provide, getCurrentInstance, defineModel, computed } from "vue";
 import { Icon } from "@iconify/vue";
-import { tagSelectContextKey } from "./constants";
+import {
+  TagItemData,
+  tagSelectContextKey,
+  TagSelectProvider,
+} from "./constants";
 import useOrderedChildren from "@/hooks/use-ordered-children";
-import { TagItem } from "@/components/tag-select/index";
 
-const model = defineModel();
+const model = defineModel<string[]>();
 const collapse = ref(true);
 const emit = defineEmits(["change"]);
 const instance = getCurrentInstance();
@@ -30,20 +33,20 @@ const {
   children: tagItems,
   addChild: registerTagItem,
   removeChild: unregisterTagItem,
-} = useOrderedChildren(instance, "TagItem");
+} = useOrderedChildren<TagItemData>(instance!, "TagItem");
 
-const checkedChange = (value, status) => {
+const checkedChange = (value: string, status: boolean) => {
   let newValue = model.value;
   if (status) {
-    newValue.push(value);
+    newValue?.push(value);
   } else {
-    newValue = model.value.filter((val) => val !== value);
+    newValue = model.value?.filter((val) => val !== value);
   }
   model.value = newValue;
   emit("change", newValue);
 };
 
-provide(tagSelectContextKey, {
+provide<TagSelectProvider>(tagSelectContextKey, {
   model,
   checkedChange,
   registerTagItem,
@@ -51,9 +54,10 @@ provide(tagSelectContextKey, {
 });
 
 const allChecked = computed(() => {
-  return model.value.length === tagItems.value.length;
+  return model.value?.length === tagItems.value.length;
 });
-const allChange = (status) => {
+
+const allChange = (status: boolean) => {
   let newValue =
     status === true ? tagItems.value.map((item) => item.value) : [];
   model.value = newValue;
@@ -65,7 +69,7 @@ const toggleCollapse = () => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .tag-select {
   padding-right: 50px;
   max-height: 32px;

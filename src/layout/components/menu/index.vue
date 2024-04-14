@@ -1,30 +1,32 @@
 <template>
   <el-menu
-    :background-color="effect === 'dark' ? '#141414' : ''"
     :class="['base-menu']"
-    :collapse-transition="false"
     :default-active="activeName"
     :default-openeds="openedNames"
+    :collapse-transition="false"
     :mode="mode"
     :popper-effect="effect"
-    :text-color="effect === 'dark' ? '#E5EAF3' : ''"
     :unique-opened="layoutStore.menuUniqueOpened"
     ellipsis
+    :background-color="effect === 'dark' ? '#141414' : ''"
+    :text-color="effect === 'dark' ? '#E5EAF3' : ''"
   >
     <SubMenu v-for="child in menuList" :key="child.name" :data="child" />
   </el-menu>
 </template>
-<script setup>
-import { provide, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+<script lang="ts" setup>
+import { PropType, provide, ref, watch } from "vue";
+import { RouteRecordNormalized, useRoute, useRouter } from "vue-router";
 import { useLayoutStore } from "@/store";
 import SubMenu from "./sub-menu.vue";
+import type { MenuData } from "@/router/constants.ts";
+import { MENU_CONTEXT_KEY, MenuProvider } from "./constants.ts";
 
 const props = defineProps({
   effect: { type: String, default: "light" },
-  menuList: { type: Array, default: () => [] },
+  menuList: { type: Array as PropType<MenuData[]>, default: () => [] },
   beforeItemClick: Function,
-  matched: Array,
+  matched: Array as PropType<RouteRecordNormalized[]>,
   route: Object,
   mode: {
     type: String,
@@ -36,7 +38,7 @@ const router = useRouter();
 const route = useRoute();
 
 const activeName = ref(route.name);
-const openedNames = ref([]);
+const openedNames = ref<string[]>([]);
 const layoutStore = useLayoutStore();
 
 const updateActive = () => {
@@ -45,19 +47,19 @@ const updateActive = () => {
 
   if (props.mode === "vertical") {
     openedNames.value = matched
-      .map((item) => item.name)
-      .filter((item) => item !== currentRoute.name);
+        .map((item) => item.name)
+        .filter((item) => item !== currentRoute.name) as string[];
   }
+
   activeName.value = currentRoute.name;
 
   //TODO 后续优化 如果当前激活菜单的节点被隐藏掉 那么手动滚动到中间
 };
-
-const isLink = (data) => {
+const isLink = (data: MenuData) => {
   return data.meta?.link;
 };
 
-const onItemClick = (data, event) => {
+const onItemClick = (data: MenuData, event: Event) => {
   if (props.beforeItemClick) {
     const beforeData = props.beforeItemClick(data, isLink(data), event);
     if (beforeData === false) {
@@ -78,6 +80,7 @@ const onItemClick = (data, event) => {
   if (route.name === name) {
     return;
   }
+
   router.push({
     name: name,
     query: query,
@@ -92,7 +95,7 @@ watch(
   { immediate: true },
 );
 
-provide("menu", { onItemClick });
+provide<MenuProvider>(MENU_CONTEXT_KEY, { onItemClick });
 </script>
 
 <style lang="scss">

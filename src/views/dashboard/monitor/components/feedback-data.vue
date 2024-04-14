@@ -18,7 +18,7 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 const score = ref(4.5);
 </script>

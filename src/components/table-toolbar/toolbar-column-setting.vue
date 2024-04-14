@@ -66,16 +66,17 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, defineModel, computed, watch } from "vue";
 import { Icon } from "@iconify/vue";
 import Draggable from "vuedraggable";
 import { isEmpty } from "@/utils/util";
-const mode = defineModel("columns");
+import type { TableColumnData } from "@/components/table-column/index.vue";
 
-const setList = ref([]);
-let setSort = {};
-let initValue = [];
+const mode = defineModel<TableColumnData[]>("columns");
+const setList = ref<TableColumnData[]>([]);
+let setSort: Record<string, number> = {};
+let initValue: TableColumnData[] = [];
 let initSort = {};
 
 const draggableList = computed({
@@ -95,21 +96,21 @@ const draggableList = computed({
   },
 });
 
-const cloneColumns = (list) => {
+const cloneColumns = (list: TableColumnData[]) => {
   return list.map((d) => ({ ...d }));
 };
 
-const getSortKey = (item) => {
+const getSortKey = (item: TableColumnData) => {
   return item.prop || item.type;
 };
 
-const isSet = (item) => {
+const isSet = (item: TableColumnData) => {
   return !isEmpty(item.prop) && item.type !== "selection";
 };
 
 const init = () => {
-  initValue = cloneColumns(mode.value);
-  mode.value.forEach((item, index) => {
+  initValue = cloneColumns(mode.value!);
+  mode.value?.forEach((item, index) => {
     const sortKey = getSortKey(item);
     initSort[sortKey] = index;
     if (isSet(item)) {
@@ -124,7 +125,7 @@ watch(
   mode,
   () => {
     setList.value = [];
-    mode.value.forEach((item) => {
+    mode.value?.forEach((item) => {
       const { hide, prop, label, type, fixed } = item;
       if (isSet(item)) {
         setList.value.push({
@@ -143,7 +144,7 @@ watch(
 // =========================== 处理 =======================
 
 const handleSort = () => {
-  mode.value.sort((a, b) => {
+  mode.value?.sort((a, b) => {
     let aKey = getSortKey(a);
     let bKey = getSortKey(b);
     return (
@@ -163,26 +164,30 @@ const handleFixed = (data, fixed) => {
     data.fixed = fixed;
   }
 
-  for (let i = 0; i < mode.value.length; i++) {
-    const item = mode.value[i];
-    if (item.prop === data.prop) {
-      //已经激活的就删除掉
-      if (type === "del") {
-        delete item.fixed;
-      } else {
-        item.fixed = fixed;
+  if (mode.value) {
+    for (let i = 0; i < mode.value.length; i++) {
+      const item = mode.value[i];
+      if (item.prop === data.prop) {
+        //已经激活的就删除掉
+        if (type === "del") {
+          delete item.fixed;
+        } else {
+          item.fixed = fixed;
+        }
+        break;
       }
-      break;
     }
   }
 };
 
 const checkChange = ({ checked, prop }) => {
-  for (let i = 0; i < mode.value.length; i++) {
-    const item = mode.value[i];
-    if (item.prop === prop) {
-      item.hide = !checked;
-      break;
+  if (mode.value) {
+    for (let i = 0; i < mode.value.length; i++) {
+      const item = mode.value[i];
+      if (item.prop === prop) {
+        item.hide = !checked;
+        break;
+      }
     }
   }
 };

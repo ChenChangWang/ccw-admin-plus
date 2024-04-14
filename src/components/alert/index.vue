@@ -18,17 +18,18 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, defineProps } from "vue";
 import { Icon } from "@iconify/vue";
-const props = defineProps({
+
+defineProps({
   closable: {
     type: Boolean,
     default: false,
   },
 });
 const visible = ref(true);
-const close = (evt) => {
+const close = () => {
   visible.value = false;
 };
 </script>

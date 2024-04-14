@@ -115,21 +115,32 @@
   </el-card>
 </template>
 
-<script setup lang="jsx">
-import { computed, reactive, ref, watch } from "vue";
+<script setup lang="tsx">
+import { computed, reactive, ref } from "vue";
 import { QueryForm, QueryFormItem } from "@/components/query-form";
 import { Icon } from "@iconify/vue";
 import useLoading from "@/hooks/use-loading";
-import { getSearchTableList } from "@/api/list";
+import { getSearchTableList, SearchTable } from "@/api/list";
 import Alert from "@/components/alert/index.vue";
-import TableColumn from "@/components/table-column/index.vue";
+import TableColumn, {
+  TableColumnData,
+} from "@/components/table-column/index.vue";
 import TableToolbar from "@/components/table-toolbar/index.vue";
 import useTableSelection from "@/hooks/use-table-selection";
 import useTable from "@/hooks/use-table";
+import { TableInstance } from "element-plus";
 
 defineOptions({
   name: "SearchTable", //不命名组件，keep-alive的include不属性生效
 });
+
+interface RuleForm {
+  ruleName: string;
+  describe: string;
+  serviceCallNumber: string;
+  status: string;
+  prevCallTime: string;
+}
 const statusOptions = [
   { label: "关闭", value: "closed" },
   { label: "运行中", value: "running" },
@@ -142,17 +153,17 @@ const statusMap = {
   online: { label: "已上线", value: "online" },
   exception: { label: "异常", value: "exception" },
 };
-const formRef = ref();
-const tableRef = ref();
-const queryForm = reactive({
+const formRef = ref<InstanceType<typeof QueryForm>>();
+const tableRef = ref<TableInstance>();
+const queryForm = reactive<RuleForm>({
   ruleName: "",
   describe: "",
   serviceCallNumber: "",
   status: "",
   prevCallTime: "",
 });
-let tableData = ref([]);
-const columns = ref([
+let tableData = ref<SearchTable[]>([]);
+const columns = ref<TableColumnData[]>([
   { type: "selection", width: 55 },
   { prop: "ruleName", label: "规则名称", "min-width": 150 },
   { prop: "describe", label: "描述", "min-width": 130 },
@@ -192,12 +203,15 @@ const {
   multipleSelection,
   clearSelection,
 } = useTableSelection(tableData, tableRef);
+
 const [loading, setLoading] = useLoading(false);
+
 const serviceCallTotal = computed(() => {
   return multipleSelection.value.reduce((acc, item) => {
     return Number(acc) + Number(item.serviceCallNumber);
   }, 0);
 });
+
 const search = () => {
   fetchDataList();
 };

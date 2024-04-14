@@ -11,8 +11,7 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { List, ListItem, ListItemMeta } from "@/components/list";
 
 const list = [

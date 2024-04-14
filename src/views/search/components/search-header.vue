@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -41,11 +41,12 @@ const props = defineProps({ title: String, name: String });
 const input = ref("");
 const router = useRouter();
 
-const tabClick = (tab) => {
+const tabClick = (tab: string) => {
   router.push({
     name: tab.props.name,
   });
 };
+
 const beforeLeave = (activeName, oldActiveName) => {
   return false;
 };

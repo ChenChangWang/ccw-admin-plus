@@ -28,21 +28,24 @@
 
     <template #dropdown>
       <TabsMenu
-        :currentRouteTagIndex="currentRouteTagIndex"
-        :index="index"
-        :tagList="tagList"
+          :currentRouteTagIndex="currentRouteTagIndex"
+          :index="index"
+          :tagList="tagList"
       />
     </template>
   </el-dropdown>
 </template>
 
-<script setup>
-import { computed, onUnmounted, ref, defineEmits } from "vue";
-import { useRoute, useRouter } from "vue-router";
+<script lang="ts" setup>
+import { computed, onUnmounted, ref, defineEmits, PropType } from "vue";
+import { useRoute } from "vue-router";
 import TabsMenu from "./tabs-menu.vue";
 import { HOME_PATH } from "@/router/constants";
 import { routeI18n } from "@/locale";
 import { useI18n } from "vue-i18n";
+import { TabsNavProps } from "@/store/modules/tabs-nav/types.ts";
+import {DropdownInstance, ElDropdown} from "element-plus";
+import { OptionType } from "@/layout/components/tabs-nav/types.ts";
 import { routeEqual } from "@/utils/util";
 
 const popperOptions = {
@@ -56,16 +59,18 @@ const popperOptions = {
   ],
 };
 const props = defineProps({
-  itemData: Object,
+  itemData: Object as PropType<TabsNavProps>,
   index: Number,
   isActive: Boolean,
-  tagList: Array,
+  tagList: {
+    type: Array as PropType<TabsNavProps[]>,
+    default: () => [],
+  },
 });
 const emits = defineEmits(["toPage", "handleTagsOption", "handleClose"]);
-const dropdownRef = ref();
+const dropdownRef = ref<DropdownInstance>();
 const isDropdown = ref(false);
 const currentRoute = useRoute();
-const router = useRouter();
 const i18n = useI18n();
 
 const title = computed(() => {
@@ -73,7 +78,7 @@ const title = computed(() => {
 });
 
 const isHomeTag = computed(() => {
-  return props.itemData.path === HOME_PATH;
+  return props.itemData?.path === HOME_PATH;
 });
 
 const currentRouteTagIndex = computed(() => {
@@ -83,17 +88,19 @@ const currentRouteTagIndex = computed(() => {
 });
 
 // =========================== 控制下拉选择dropdown =======================
-const visibleChange = (visible) => {
+const visibleChange = (visible: boolean) => {
   isDropdown.value = visible;
 };
 
-const handleMouseDown = (event) => {
+const handleMouseDown = (event: MouseEvent) => {
   if (isDropdown.value) {
-    const ref = dropdownRef.value;
-    const trigger = ref.triggeringElementRef.$el;
-    const content = ref.contentRef;
-    if (!trigger.contains(event.target) && !content.contains(event.target)) {
-      ref.handleClose();
+    const trigger = dropdownRef.value?.triggeringElementRef.$el;
+    const content = dropdownRef.value?.contentRef;
+    if (
+      !trigger.contains(event.target as HTMLElement) &&
+      !content?.contains(event.target as HTMLElement)
+    ) {
+      dropdownRef.value?.handleClose();
     }
   }
 };
@@ -113,7 +120,7 @@ const onClose = () => {
   emits("handleClose", props.itemData, currentRoute);
 };
 
-const command = (type) => {
+const command = (type: OptionType) => {
   emits("handleTagsOption", type, props.itemData, currentRoute);
 };
 </script>

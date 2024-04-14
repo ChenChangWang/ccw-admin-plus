@@ -38,13 +38,14 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { getAssetsImage } from "@/utils/util";
 
 defineOptions({
   name: "CardList", //不命名组件，keep-alive的include不属性生效
 });
+
 const attarSpan = {
   xs: 24,
   sm: 12,

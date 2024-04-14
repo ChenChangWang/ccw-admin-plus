@@ -84,17 +84,20 @@
   </div>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import { useLayoutStore } from "@/store";
 import { Icon } from "@iconify/vue";
 import { List, ListItem, ListItemMeta } from "@/components/list";
 import ThemeColor from "./theme-color.vue";
 import { useI18n } from "vue-i18n";
+import type { MenuMode } from "@/store/modules/layout/types.ts";
 
 const { t } = useI18n();
-
-const navModeList = computed(() => {
+const layoutStore = useLayoutStore();
+const navModeList = computed<
+  { title: string; class: string; value: MenuMode }[]
+>(() => {
   return [
     {
       title: t("layout.setting.menuLayout.side"),
@@ -119,14 +122,12 @@ const navList = computed(() => {
     { key: "asideEffect", title: t("layout.setting.sideStyle") },
   ];
 });
-
 const contentWidthModeList = computed(() => {
   return [
     { label: t("layout.setting.contentWidth.fixed"), value: "fixed" },
     { label: t("layout.setting.contentWidth.fluid"), value: "fluid" },
   ];
 });
-
 const interfaceList = computed(() => {
   return [
     { key: "isToppingHeader", title: t("layout.setting.toppingHeader") },
@@ -141,25 +142,22 @@ const interfaceList = computed(() => {
     { key: "isFooter", title: t("layout.setting.footer") },
   ];
 });
-
-const layoutStore = useLayoutStore();
-
 //内容区域宽度是否禁用
 const contentWidthModeDisabled = computed(() => {
   return !layoutStore.menuLayoutModeTop;
 });
 
-const navModeChange = (mode) => {
+const navModeChange = (mode: MenuMode) => {
   layoutStore.updatePatch({ menuLayoutMode: mode });
 };
 
-const weakModeChange = (val) => {
+const weakModeChange = (val: boolean) => {
   if (val) {
     document.body.classList.add("weak-mode");
-    document.getElementById("app").classList.add("container-overflow");
+    document.getElementById("app")?.classList.add("container-overflow");
   } else {
     document.body.classList.remove("weak-mode");
-    document.getElementById("app").classList.remove("container-overflow");
+    document.getElementById("app")?.classList.remove("container-overflow");
   }
 };
 </script>

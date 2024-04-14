@@ -19,14 +19,20 @@
   <MenuItem v-else :item="data" />
 </template>
 
-<script setup>
-import { computed, inject, ref } from "vue";
+<script lang="ts" setup>
+import { computed, PropType } from "vue";
 import { Icon } from "@iconify/vue";
 import MenuItem from "./menu-item.vue";
+import type { MenuData } from "@/router/constants.ts";
 import { routeI18n } from "@/locale";
 import { useI18n } from "vue-i18n";
 
-const props = defineProps({ data: Object });
+const props = defineProps({
+  data: {
+    type: Object as PropType<MenuData>,
+    default: () => {},
+  },
+});
 const i18n = useI18n();
 
 const title = computed(() => {

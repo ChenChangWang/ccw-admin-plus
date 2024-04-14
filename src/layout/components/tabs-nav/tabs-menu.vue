@@ -30,12 +30,23 @@
   </el-dropdown-menu>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { Icon } from "@iconify/vue";
+import { PropType } from "vue";
+import { TabsNavProps } from "@/store/modules/tabs-nav/types.ts";
 defineProps({
-  index: Number,
-  currentRouteTagIndex: Number,
-  tagList: Array,
+  index: {
+    type: Number,
+    default: 1,
+  },
+  currentRouteTagIndex: {
+    type: Number,
+    default: 1,
+  },
+  tagList: {
+    type: Array as PropType<TabsNavProps[]>,
+    default: () => [],
+  },
 });
 </script>
 

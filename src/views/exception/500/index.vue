@@ -2,7 +2,7 @@
   <ErrorResult code="500" desc="抱歉，服务器出了点问题～" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import ErrorResult from "../components/error-result.vue";
 
 defineOptions({

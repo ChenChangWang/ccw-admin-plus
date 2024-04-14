@@ -1,10 +1,10 @@
 <template>
-  <div :style="style" class="grid-item">
+  <div class="grid-item" :style="style">
     <slot />
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
   onMounted,
   onUnmounted,
@@ -17,11 +17,14 @@ import {
 } from "vue";
 import {
   gridContextKey,
+  GridItemData,
   gridItemContextKey,
+  GridProvider,
+  GridItemProvider,
 } from "@/components/grid/constants";
-import { GridItem } from "@/components/grid/index";
 import { useResponsiveState } from "@/hooks/use-responsive-state";
 import { isEmpty } from "@/utils/util";
+
 defineOptions({
   name: "GridItem",
 });
@@ -53,17 +56,15 @@ const props = defineProps({
     },
   },
 });
-
 const responsiveState = useResponsiveState(props.responsive, {
   span: props.span,
   offset: props.offset,
 });
-
-const grid = inject(gridContextKey);
-const gridItemContext = inject(gridItemContextKey);
+const grid = inject(gridContextKey) as GridProvider;
+const gridItemContext = inject(gridItemContextKey) as GridItemProvider;
 const instance = getCurrentInstance();
-const gridItem = reactive({
-  uid: instance.uid,
+const gridItem = reactive<GridItemData>({
+  uid: instance?.uid!,
   index: null,
   span: responsiveState.value.span,
   offset: responsiveState.value.offset,
@@ -96,8 +97,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  grid.unregisterGrid(gridItem.uid);
+  grid.unregisterGrid(gridItem.uid!);
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped lang="scss"></style>

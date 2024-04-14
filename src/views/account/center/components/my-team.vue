@@ -13,8 +13,7 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { getAssetsImage } from "@/utils/util";
 const list = [
   {

@@ -8,8 +8,9 @@
   ></div>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
+
 const props = defineProps({
   minHeight: {
     type: Number,
@@ -21,6 +22,7 @@ const props = defineProps({
     default: false,
   },
 });
+
 const styles = computed(() => {
   if (props.fix) {
     return;

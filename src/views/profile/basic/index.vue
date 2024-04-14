@@ -5,7 +5,7 @@
     </div>
 
     <el-card class="content-card" style="margin-top: 14px">
-      <el-descriptions :column="responsiveState.column" title="个人信息">
+      <el-descriptions title="个人信息" :column="responsiveState.column">
         <el-descriptions-item label="姓名：" width="150px">
           管理员
         </el-descriptions-item>
@@ -25,7 +25,7 @@
 
       <el-divider />
 
-      <el-descriptions :column="responsiveState.column" title="用户信息">
+      <el-descriptions title="用户信息" :column="responsiveState.column">
         <el-descriptions-item label="用户姓名：" width="150px">
           王小二
         </el-descriptions-item>
@@ -47,24 +47,24 @@
 
       <el-descriptions title="商品列表"> </el-descriptions>
       <el-table :data="tableData" stripe style="width: 100%">
-        <el-table-column label="商品编号" min-width="100" prop="id" />
-        <el-table-column label="商品名称" min-width="120" prop="name" />
-        <el-table-column label=" 品条码" min-width="120" prop="barcode" />
-        <el-table-column label="单价" min-width="80" prop="price" />
-        <el-table-column label="数量" min-width="70" prop="num" />
-        <el-table-column label="金额" min-width="80" prop="amount" />
+        <el-table-column prop="id" label="商品编号" min-width="100" />
+        <el-table-column prop="name" label="商品名称" min-width="120" />
+        <el-table-column prop="barcode" label=" 品条码" min-width="120" />
+        <el-table-column prop="price" label="单价" min-width="80" />
+        <el-table-column prop="num" label="数量" min-width="70" />
+        <el-table-column prop="amount" label="金额" min-width="80" />
       </el-table>
     </el-card>
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { useResponsiveState } from "@/hooks/use-responsive-state";
 
 defineOptions({
   name: "Basic", //不命名组件，keep-alive的include不属性生效
 });
+
 const responsiveState = useResponsiveState(
   {
     ["lg"]: { column: 3 },
@@ -75,6 +75,7 @@ const responsiveState = useResponsiveState(
     column: 3,
   },
 );
+
 const tableData = [
   {
     id: 1234561,
@@ -119,7 +120,7 @@ const tableData = [
 ];
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .profile-basic {
   :deep(.el-descriptions) {
     .el-descriptions__body {

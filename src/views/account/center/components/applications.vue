@@ -6,11 +6,11 @@
   />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import ApplicationsList from "@/views/search/components/applications-list.vue";
 import useLoading from "@/hooks/use-loading";
-import { getApplicationList } from "@/api/search";
+import { ApplicationData, getApplicationList } from "@/api/search";
 
 const attarSpan = {
   xs: 24,
@@ -19,8 +19,9 @@ const attarSpan = {
   lg: 12,
   xl: 8,
 };
-const dataList = ref([]);
+const dataList = ref<ApplicationData[]>([]);
 const [loading, setLoading] = useLoading(false);
+
 const fetchDataList = async () => {
   setLoading(true);
   try {

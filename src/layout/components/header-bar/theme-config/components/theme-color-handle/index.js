@@ -2,6 +2,7 @@ import { getCssColorType } from "./function";
 import { getVal } from "./var";
 
 export default function themeColorHandle() {}
+
 themeColorHandle.prototype.styleElement = null;
 
 themeColorHandle.prototype.init = function () {

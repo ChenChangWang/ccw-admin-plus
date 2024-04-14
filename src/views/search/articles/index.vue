@@ -61,7 +61,8 @@
     </el-card>
   </div>
 </template>
-<script>
+
+<script lang="ts">
 const categoryOptions = Array.from({ length: 24 }).map((_, index) => {
   return {
     value: `value${index + 1}`,
@@ -105,32 +106,34 @@ const sortOptions = [
   },
 ];
 </script>
-<script setup>
-import { ref, reactive, computed } from "vue";
+
+<script lang="ts" setup>
+import { ref, reactive } from "vue";
 import SearchHeader from "../components/search-header.vue";
 import { TagSelect, TagItem } from "@/components/tag-select";
 import useLoading from "@/hooks/use-loading";
-import { getArticleList } from "@/api/search";
-import { Icon } from "@iconify/vue";
+import { ArticleData, ArticleParma, getArticleList } from "@/api/search";
 import { isEmpty } from "@/utils/util";
 import ArticlesList from "../components/articles-list.vue";
+import type { PageParam } from "@/api";
 
 defineOptions({
   name: "Articles", //不命名组件，keep-alive的include不属性生效
 });
+
 const form = reactive({
   categoryCheckList: [],
   owner: [],
   sort: "latestPublish",
 });
-const pagination = reactive({
+const pagination = reactive<PageParam>({
   currentPage: 1,
   pageSize: 5,
 });
 const [loading, setLoading] = useLoading(false);
 let finished = ref(false);
-const categoryChange = (values) => {};
-const dataList = ref([]);
+const categoryChange = () => {};
+const dataList = ref<ArticleData[]>([]);
 
 const fetchDataList = async () => {
   setLoading(true);
@@ -141,7 +144,8 @@ const fetchDataList = async () => {
       currentPage: pagination.currentPage,
       pageSize: pagination.pageSize,
       ...form,
-    });
+    } as ArticleParma);
+
     if (isEmpty(list)) {
       finished.value = true;
       return;
@@ -157,6 +161,7 @@ const fetchDataList = async () => {
 };
 
 fetchDataList();
+
 const loadMore = () => {
   if (loading.value === true || finished.value === true) {
     return;

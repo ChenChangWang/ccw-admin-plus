@@ -5,7 +5,7 @@
 
       <div class="page-header-container">
         <div class="page-header-content">
-          <el-descriptions :column="responsiveState1.column" title="">
+          <el-descriptions title="" :column="responsiveState1.column">
             <el-descriptions-item label="创建人：" width="150px">
               陈昌望
             </el-descriptions-item>
@@ -37,9 +37,9 @@
         <span>审核进度</span>
       </template>
       <el-steps :active="2" align-center>
-        <el-step description="申请人：陈昌望" title="申请" />
-        <el-step description="审批人：管理员" title="审批" />
-        <el-step description="审批人：管理员" title="完成" />
+        <el-step title="申请" description="申请人：陈昌望" />
+        <el-step title="审批" description="审批人：管理员" />
+        <el-step title="完成" description="审批人：管理员" />
       </el-steps>
     </el-card>
 
@@ -47,7 +47,7 @@
       <template #header>
         <span>基本信息</span>
       </template>
-      <el-descriptions :column="responsiveState2.column" title="">
+      <el-descriptions title="" :column="responsiveState2.column">
         <el-descriptions-item label="商品名称：" width="150px">
           XX笔记本电脑
         </el-descriptions-item>
@@ -79,7 +79,7 @@
       <template #header>
         <span>用户信息</span>
       </template>
-      <el-descriptions :column="responsiveState2.column" title="">
+      <el-descriptions title="" :column="responsiveState2.column">
         <el-descriptions-item label="用户姓名：" width="150px">
           王小二
         </el-descriptions-item>
@@ -114,16 +114,16 @@
           :name="item.name"
         >
           <el-table :data="tableData[activeName]" stripe style="width: 100%">
-            <el-table-column label="操作类型" min-width="120" prop="type" />
-            <el-table-column label="操作人" min-width="120" prop="name" />
-            <el-table-column label=" 执行结果" min-width="120" prop="status">
+            <el-table-column prop="type" label="操作类型" min-width="120" />
+            <el-table-column prop="name" label="操作人" min-width="120" />
+            <el-table-column prop="status" label=" 执行结果" min-width="120">
               <template #default="scope">
                 <span :class="['circle', scope.row.status]"></span>
                 {{ scope.row.status === "success" ? "成功" : "驳回" }}
               </template>
             </el-table-column>
-            <el-table-column label="操作时间" min-width="170" prop="date" />
-            <el-table-column label="备注" min-width="120" prop="remark" />
+            <el-table-column prop="date" label="操作时间" min-width="170" />
+            <el-table-column prop="remark" label="备注" min-width="120" />
           </el-table>
         </el-tab-pane>
       </el-tabs>
@@ -131,7 +131,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import { useResponsiveState } from "@/hooks/use-responsive-state";
 import { toYuan, toK } from "@/utils/util";
@@ -140,6 +140,7 @@ import numeral from "numeral";
 defineOptions({
   name: "Advanced", //不命名组件，keep-alive的include不属性生效
 });
+
 const headerExtraList = [
   {
     title: "状态",
@@ -229,6 +230,7 @@ const tableData = {
     },
   ],
 };
+
 const responsiveState1 = useResponsiveState(
   {
     ["lg"]: { column: 2 },
@@ -239,6 +241,7 @@ const responsiveState1 = useResponsiveState(
     column: 3,
   },
 );
+
 const responsiveState2 = useResponsiveState(
   {
     ["lg"]: { column: 3 },
@@ -251,7 +254,7 @@ const responsiveState2 = useResponsiveState(
 );
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 @use "@/assets/styles/var" as var;
 
 .advanced-basic {

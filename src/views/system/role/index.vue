@@ -88,27 +88,29 @@
   </div>
 </template>
 
-<script setup>
-import { computed, h, reactive, ref } from "vue";
-import TableColumn from "@/components/table-column/index.vue";
+<script lang="ts" setup>
+import { h, reactive, ref } from "vue";
+import TableColumn, {
+  TableColumnData,
+} from "@/components/table-column/index.vue";
 import TableToolbar from "@/components/table-toolbar/index.vue";
 import AddRole from "./components/add-role.vue";
 import EditRole from "./components/edit-role.vue";
 import AssignPermission from "./components/assign-permission.vue";
-import { useI18n } from "vue-i18n";
 import useLoading from "@/hooks/use-loading";
 import useTableSelection from "@/hooks/use-table-selection";
-import { getRoleList } from "@/api/system";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { getRoleList, RoleData } from "@/api/system";
+import { ElMessage, ElMessageBox, TableInstance } from "element-plus";
 import useTable from "@/hooks/use-table";
 
 defineOptions({
   name: "Role", //不命名组件，keep-alive的include不属性生效
 });
-let tableData = ref([]);
-const { t } = useI18n();
 
-const columns = ref([
+type State = { dialog: boolean; current: RoleData | null };
+
+let tableData = ref<RoleData[]>([]);
+const columns = ref<TableColumnData[]>([
   { type: "selection", width: 55 },
   { prop: "name", label: "角色名称", "min-width": 130 },
   { prop: "explain", label: "说明", "min-width": 130 },
@@ -129,26 +131,20 @@ const columns = ref([
     width: 190,
   },
 ]);
-const tableRef = ref();
+const tableRef = ref<TableInstance>();
 const addDialog = ref(false);
-const editState = reactive({ dialog: false, current: null });
-const assignPermissionState = reactive({ dialog: false, current: null });
+const editState = reactive<State>({ dialog: false, current: null });
+const assignPermissionState = reactive<State>({
+  dialog: false,
+  current: null,
+});
 
 const [loading, setLoading] = useLoading(false);
-const {
-  size,
-  stripe,
-  pagination,
-  handleSizeChange,
-  handleCurrentChange,
-  resetForm,
-} = useTable(() => fetchDataList());
-const {
-  handleSelectChange,
-  handleSelectAll,
-  multipleSelection,
-  clearSelection,
-} = useTableSelection(tableData, tableRef);
+const { size, stripe, pagination, handleSizeChange, handleCurrentChange } =
+  useTable(() => fetchDataList());
+
+const { handleSelectChange, handleSelectAll, multipleSelection } =
+  useTableSelection(tableData, tableRef);
 
 const fetchDataList = async () => {
   setLoading(true);
@@ -174,6 +170,7 @@ const search = () => {
 const onAdd = () => {
   addDialog.value = true;
 };
+
 const onDelete = () => {
   if (!multipleSelection.value.length) {
     return;
@@ -219,11 +216,13 @@ const onDeleteByRow = ({ id, name }) => {
     });
   });
 };
-const onEditByRow = (row) => {
+
+const onEditByRow = (row: RoleData) => {
   editState.current = row;
   editState.dialog = true;
 };
-const onAssignPermissionStateByRow = (row) => {
+
+const onAssignPermissionStateByRow = (row: RoleData) => {
   assignPermissionState.current = row;
   assignPermissionState.dialog = true;
 };

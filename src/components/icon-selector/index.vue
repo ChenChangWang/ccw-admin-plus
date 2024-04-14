@@ -42,14 +42,13 @@
   </el-dropdown>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, watch, computed } from "vue";
 import { queryIconList, collectionIconList } from "@/api/system";
 import { Icon } from "@iconify/vue";
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { useFormDisabled } from "element-plus";
 
-const inputDisabled = useFormDisabled();
 const popperOptions = {
   modifiers: [
     {
@@ -60,7 +59,9 @@ const popperOptions = {
     },
   ],
 };
-const props = defineProps({
+
+const inputDisabled = useFormDisabled();
+defineProps({
   disabled: {
     type: Boolean,
     default: false,
@@ -70,11 +71,9 @@ const props = defineProps({
     default: "请选择图标标识",
   },
 });
-
 const query = ref("");
 const list = ref([]);
 const dropdownRef = ref();
-
 const mode = defineModel();
 const icon = computed({
   get: () => mode.value,
@@ -83,11 +82,13 @@ const icon = computed({
   },
 });
 
-let source = null;
+let source: CancelTokenSource | null = null;
+
 watch(query, (val) => {
   fetchIconList();
 });
-const fetchIconList = async (item) => {
+
+const fetchIconList = async () => {
   try {
     if (source) {
       source.cancel("取消请求查询");
@@ -102,9 +103,10 @@ const fetchIconList = async (item) => {
     }
   } catch (err) {}
 };
+
 fetchIconList();
 
-const onSelect = (iconStr) => {
+const onSelect = (iconStr: string) => {
   icon.value = iconStr;
   dropdownRef.value.handleClose();
 };

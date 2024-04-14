@@ -18,10 +18,7 @@
   </el-card>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import { Icon } from "@iconify/vue";
-
+<script lang="ts" setup>
 const props = defineProps({
   desc: String,
 });

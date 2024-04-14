@@ -32,7 +32,7 @@
     </el-row>
   </el-form>
 </template>
-<script setup>
+<script lang="ts" setup>
 import {
   ref,
   defineProps,
@@ -40,21 +40,34 @@ import {
   computed,
   provide,
   getCurrentInstance,
+  PropType,
 } from "vue";
 import { useResize } from "@/hooks/use-resize";
-import { useSpanConfig } from "@/components/query-form/hook/use-span-config";
+import {
+  BreakpointsSpan,
+  LabelPosition,
+  useSpanConfig,
+} from "@/components/query-form/hook/use-span-config";
 import useOrderedChildren from "@/hooks/use-ordered-children";
 import { beforeDebounce } from "@/utils/util";
 import { Icon } from "@iconify/vue";
+import type { ResizeCallBack } from "@/utils/resizeEvent.ts";
+import type { RowInstance, FormInstance } from "element-plus";
+import type {
+  FormItemData,
+  QueryFormProvide,
+} from "@/components/query-form/constants.ts";
+import { formContextKey } from "@/components/query-form/constants";
+
 
 const props = defineProps({
   labelPosition: {
-    type: String,
+    type: String as PropType<LabelPosition>,
     values: ["left", "right", "top"],
     default: "right",
   },
   span: {
-    type: [Number, Array],
+    type: [Number, Array] as PropType<number | BreakpointsSpan>,
     default: null,
   },
   gutter: {
@@ -66,30 +79,27 @@ const props = defineProps({
     default: false,
   },
 });
-
-const formRef = ref();
+const formRef = ref<FormInstance>();
 const width = ref();
-const resizeRef = ref();
+const resizeRef = ref<RowInstance>();
 const collapse = ref(true);
 const overflow = ref(false);
-
 const formContext = useSpanConfig(width, props.span, props.labelPosition);
 const instance = getCurrentInstance();
-
 const {
   children: formItems,
   addChild: registerForm,
   removeChild: unregisterForm,
-} = useOrderedChildren(instance, "QueryFormItem");
+} = useOrderedChildren<FormItemData>(instance!, "QueryFormItem");
 
 const setWidth = beforeDebounce(({ target }) => {
   const client = target.getBoundingClientRect();
   width.value = client.width;
 }, 10);
 
-useResize(resizeRef, setWidth);
+useResize(resizeRef, setWidth as ResizeCallBack);
 
-provide(formContextKey, {
+provide<QueryFormProvide>(formContextKey, {
   formItems,
   registerForm,
   unregisterForm,
@@ -135,12 +145,10 @@ watch([collapse, formContext.value, () => formItems.value], () => {
 const toggleCollapse = () => {
   collapse.value = !collapse.value;
 };
+
 defineExpose({
   formRef,
 });
-</script>
-<script>
-import { formContextKey } from "@/components/query-form/constants";
 </script>
 
 <style scoped lang="scss">

@@ -41,7 +41,8 @@
     />
   </div>
 </template>
-<script>
+
+<script lang="ts">
 const categoryOptions = Array.from({ length: 24 }).map((_, index) => {
   return {
     value: `value${index + 1}`,
@@ -66,22 +67,28 @@ const attarSpan = {
   xl: 6,
 };
 </script>
-<script setup>
-import { computed, reactive, ref } from "vue";
+
+<script lang="ts" setup>
+import { reactive, ref } from "vue";
 import SearchHeader from "../components/search-header.vue";
+import ApplicationsList from "../components/applications-list.vue"
 import { TagItem, TagSelect } from "@/components/tag-select";
 import useLoading from "@/hooks/use-loading";
-import { getApplicationList } from "@/api/search";
-import ApplicationsList from "../components/applications-list.vue";
+import {
+  ApplicationData,
+  ApplicationParma,
+  getApplicationList,
+} from "@/api/search";
 
 defineOptions({
   name: "Applications", //不命名组件，keep-alive的include不属性生效
 });
+
 const form = reactive({
   categoryCheckList: [],
   sort: "latestCreate",
 });
-const dataList = ref([]);
+const dataList = ref<ApplicationData[]>([]);
 const [loading, setLoading] = useLoading(false);
 const fetchDataList = async () => {
   setLoading(true);
@@ -90,7 +97,8 @@ const fetchDataList = async () => {
       currentPage: 1,
       pageSize: 10,
       ...form,
-    });
+    } as ApplicationParma);
+
     dataList.value = data.list;
   } catch (err) {
   } finally {

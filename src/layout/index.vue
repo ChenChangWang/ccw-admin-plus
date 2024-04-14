@@ -36,15 +36,8 @@
   </el-container>
 </template>
 
-<script setup>
-import {
-  ref,
-  defineOptions,
-  computed,
-  provide,
-  onUnmounted,
-  nextTick,
-} from "vue";
+<script lang="ts" setup>
+import { ref, defineOptions, computed, onUnmounted, nextTick } from "vue";
 import LayoutFooter from "./components/layout-footer/index.vue";
 import LayoutAside from "./components/layout-aside/index.vue";
 import LayoutHeader from "./components/layout-header/index.vue";
@@ -53,7 +46,7 @@ import { useLayoutStore, useTabsNavStore } from "@/store";
 import { useResponsive } from "@/hooks/use-responsive";
 import { breakpointQueryMap } from "@/utils/media-query-listener";
 import { listenerRoute, removeRouteListener } from "@/utils/route-listener";
-import { useRoute } from "vue-router";
+import { type RouteLocationNormalized, useRoute } from "vue-router";
 import useAutoHideHeader from "./use-auto-hide-header";
 import bus from "@/utils/bus";
 
@@ -62,7 +55,6 @@ defineOptions({
 });
 
 const layoutStore = useLayoutStore();
-
 const reloadFlag = ref(true);
 const noCache = ref("");
 const route = useRoute();
@@ -72,7 +64,7 @@ const { visible: headerVisible } = useAutoHideHeader();
 const tabsNavStore = useTabsNavStore();
 tabsNavStore.loadLocalTagList();
 //监听路由发生变化 新增tag
-listenerRoute((route) => {
+listenerRoute((route: RouteLocationNormalized) => {
   tabsNavStore.addTag(route);
 }, true);
 
@@ -97,14 +89,14 @@ const containerClass = computed(() => {
 // =========================== 响应式控制菜单 =======================
 
 useResponsive(
-  (matchs) => {
+  (matchs: boolean) => {
     layoutStore.setMenuCollapsed(!matchs);
   },
   { query: breakpointQueryMap.lg },
 );
 
 useResponsive(
-  (matchs) => {
+  (matchs: boolean) => {
     layoutStore.setIsDrawerMenu(!matchs);
     if (layoutStore.isDrawerMenu) {
       layoutStore.setMenuCollapsed(true);
@@ -117,7 +109,7 @@ useResponsive(
 // =========================== 事件处理 =======================
 
 const reloadPage = async () => {
-  noCache.value = route.name;
+  noCache.value = route.name as string;
   reloadFlag.value = false;
 
   await nextTick();

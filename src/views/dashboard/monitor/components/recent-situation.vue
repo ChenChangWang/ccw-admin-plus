@@ -7,7 +7,7 @@
     <VChart :loading="loading" :option="option" autoresize />
   </el-card>
 </template>
-<script setup>
+<script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
 import useLoading from "@/hooks/use-loading";
 import VChart from "vue-echarts";

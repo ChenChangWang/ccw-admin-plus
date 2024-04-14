@@ -2,7 +2,7 @@
   <ErrorResult code="404" desc="抱歉，页面不见了～" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import ErrorResult from "../components/error-result.vue";
 
 defineOptions({

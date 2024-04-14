@@ -16,8 +16,7 @@
   </el-card>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 
 defineOptions({
   name: "Success", //不命名组件，keep-alive的include不属性生效

@@ -21,8 +21,7 @@
   </el-card>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 </script>
 
 <style scoped lang="scss">

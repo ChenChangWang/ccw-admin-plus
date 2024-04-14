@@ -29,8 +29,7 @@
   </el-dropdown>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import useLocale from "@/hooks/use-locale";
 import { LOCALE_OPTIONS } from "@/locale";

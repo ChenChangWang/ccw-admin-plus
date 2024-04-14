@@ -18,8 +18,7 @@
     </List>
   </el-card>
 </template>
-<script setup lang="jsx">
-import { ref, h } from "vue";
+<script setup lang="tsx">
 import { List, ListItem, ListItemMeta } from "@/components/list";
 
 const dataList = [

@@ -47,7 +47,7 @@
   </el-row>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from "vue";
 import Base from "./components/base.vue";
 import Security from "./components/security.vue";
@@ -58,17 +58,18 @@ import { useUserStore } from "@/store";
 defineOptions({
   name: "Settings", //不命名组件，keep-alive的include不属性生效
 });
-const menuList = [
+
+const menuList: { label: string; name: string }[] = [
   { label: "基本设置", name: "base" },
   { label: "安全设置", name: "security" },
   { label: "账号绑定", name: "binding" },
   { label: "新消息通知", name: "notification" },
 ];
-const menuSelected = ref("base");
+const menuSelected = ref<string>("base");
 const userStore = useUserStore();
 
 const labelSelected = computed(() => {
-  return menuList.find((item) => menuSelected.value === item.name).label;
+  return menuList.find((item) => menuSelected.value === item.name)?.label;
 });
 </script>
 

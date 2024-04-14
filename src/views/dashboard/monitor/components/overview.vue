@@ -73,12 +73,12 @@
   </el-row>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import OverviewItem from "./overview-item.vue";
 import { Icon } from "@iconify/vue";
 import numeral from "numeral";
 import { toK, toYuan, getAssetsImage } from "@/utils/util";
-import AvatarGroup from "@/components/avatar-group";
+import AvatarGroup from "@/components/avatar-group/index.tsx";
 const avatarList = [
   { name: "张 三", src: getAssetsImage("people2.jpg") },
 

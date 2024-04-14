@@ -56,7 +56,7 @@
   </el-row>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useUserStore } from "@/store";
 import { Icon } from "@iconify/vue";
@@ -87,7 +87,7 @@ const userDescriptionList = computed(() => {
     {
       id: 3,
       icon: "ant-design:home-outlined",
-      label: userStore.area.join("-"),
+      label: userStore.area?.join("-"),
     },
   ];
 });

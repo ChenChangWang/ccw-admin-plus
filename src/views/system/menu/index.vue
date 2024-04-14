@@ -135,24 +135,31 @@
   </div>
 </template>
 
-<script setup>
-import { computed, h, reactive, ref } from "vue";
-import TableColumn from "@/components/table-column/index.vue";
+<script lang="ts" setup>
+import { h, reactive, ref } from "vue";
+import TableColumn, {
+  TableColumnData,
+} from "@/components/table-column/index.vue";
 import TableToolbar from "@/components/table-toolbar/index.vue";
 import { useI18n } from "vue-i18n";
 import useLoading from "@/hooks/use-loading";
-import { getMenuList } from "@/api/system";
+import { getMenuList, SystemMenuData } from "@/api/system";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Icon } from "@iconify/vue";
 import OperationDialog from "./components/operation-dialog.vue";
 import { isEmpty } from "@/utils/util";
-import statusOptions from "@/views/system/user/statusOptions";
 import { QueryForm, QueryFormItem } from "@/components/query-form";
 import useTable from "@/hooks/use-table";
 
 defineOptions({
   name: "Menu", //不命名组件，keep-alive的include不属性生效
 });
+
+interface RuleForm {
+  name: string;
+  status: string;
+  menuName: string;
+}
 
 const formSpan = [
   [513, 24, "top"],
@@ -161,13 +168,13 @@ const formSpan = [
   [Infinity, 8, "right"],
 ];
 
-let tableData = ref([]);
-
-const queryForm = reactive({
+let tableData = ref<SystemMenuData[]>([]);
+const queryForm = reactive<RuleForm>({
   name: "",
   status: "",
+  menuName: "",
 });
-const columns = ref([
+const columns = ref<TableColumnData>([
   { prop: "menuName", label: "菜单名称", "min-width": 130 },
   {
     slotName: "icon",
@@ -212,13 +219,12 @@ const columns = ref([
     width: 260,
   },
 ]);
-const formRef = ref();
+const formRef = ref<InstanceType<typeof QueryForm>>();
 const operationState = reactive({
   visible: false,
   formData: {},
   mode: "add",
 });
-
 const [loading, setLoading] = useLoading(false);
 const { t } = useI18n();
 const { size, stripe, isQueryForm, resetForm } = useTable(
@@ -229,7 +235,7 @@ const { size, stripe, isQueryForm, resetForm } = useTable(
 const fetchDataList = async () => {
   setLoading(true);
   try {
-    const { data } = await getMenuList({});
+    const { data } = await getMenuList();
     tableData.value = data;
   } catch (err) {
   } finally {
@@ -261,9 +267,9 @@ const onDeleteByRow = ({ id, menuName }) => {
   });
 };
 
-const getParentIds = (dataList, id) => {
-  let parentIds = [];
-  const traverse = (list) => {
+const getParentIds = (dataList: SystemMenuData[], id: number) => {
+  let parentIds:number[] = [];
+  const traverse = (list: SystemMenuData[]) => {
     for (let i = 0; i < list.length; i++) {
       const item = list[i];
       let children = item.children;
@@ -271,9 +277,11 @@ const getParentIds = (dataList, id) => {
         return id;
       }
       if (!isEmpty(children)) {
-        let findId = traverse(children);
+        let findId = traverse(children!);
         if (findId !== undefined) {
-          parentIds.unshift(item.id);
+          if (item.id != null) {
+            parentIds.unshift(item.id);
+          }
           return findId;
         }
       }
@@ -283,26 +291,26 @@ const getParentIds = (dataList, id) => {
   return parentIds;
 };
 
-const setFormData = (row) => {
-  const parentIds = getParentIds(tableData.value, row.id);
+const setFormData = (row: SystemMenuData) => {
+  const parentIds = getParentIds(tableData.value, row.id!);
   operationState.formData = { ...row, parentIds: [0, ...parentIds] };
 };
 
-const handleView = (row) => {
+const handleView = (row: SystemMenuData) => {
   operationState.mode = "view";
   setFormData(row);
   operationState.visible = true;
 };
 
-const handleEdit = (row) => {
+const handleEdit = (row: SystemMenuData) => {
   operationState.mode = "edit";
   setFormData(row);
   operationState.visible = true;
 };
 
-const handleAddChild = (row) => {
+const handleAddChild = (row: SystemMenuData) => {
   operationState.mode = "addChild";
-  const parentIds = getParentIds(tableData.value, row.id);
+  const parentIds = getParentIds(tableData.value, row.id!);
   operationState.formData = {
     menuType: "menu",
     parentIds: [0, ...parentIds, row.id],
@@ -315,7 +323,7 @@ const handleAdd = () => {
   operationState.visible = true;
 };
 
-const onSubmit = async (data) => {
+const onSubmit = async () => {
   ElMessage({
     type: "error",
     message: "抱歉，您没有该权限",

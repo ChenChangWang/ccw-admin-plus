@@ -12,11 +12,10 @@
   </el-header>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import HeaderBar from "../header-bar/index.vue";
 import { useLayoutStore } from "@/store";
-import bus from "@/utils/bus";
 
 const layoutStore = useLayoutStore();
 

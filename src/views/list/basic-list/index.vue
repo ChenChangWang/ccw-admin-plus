@@ -43,7 +43,7 @@
       <div class="list-container">
         <List class="list" :loading="loading">
           <ListItem v-for="item in list" :key="item.id">
-            <listItemMeta :title="item.title">
+            <ListItemMeta :title="item.title">
               <template #avatar>
                 <el-avatar
                   shape="square"
@@ -57,7 +57,7 @@
                   {{ item.description }}
                 </el-text>
               </template>
-            </listItemMeta>
+            </ListItemMeta>
             <div class="list-item-content">
               <div class="list-item-content-item">
                 <span>负责人</span>
@@ -92,7 +92,7 @@
                       <el-dropdown-item @click="handleEdit(item)">
                         编辑
                       </el-dropdown-item>
-                      <el-dropdown-item @click="handleDelete(item.id)">
+                      <el-dropdown-item @click="handleDelete(item.id!)">
                         删除
                       </el-dropdown-item>
                     </el-dropdown-menu>
@@ -127,23 +127,24 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, h, reactive } from "vue";
 import { Icon } from "@iconify/vue";
 import OperationDialog from "./components/operation-dialog.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { List, ListItem, ListItemMeta } from "@/components/list";
-
-defineOptions({
-  name: "BasicList", //不命名组件，keep-alive的include不属性生效
-});
+import { List, ListItemMeta, ListItem } from "@/components/list";
+import useLoading from "@/hooks/use-loading";
 import {
   getBasicList,
   addBasicList,
   editBasicList,
   deleteBasicList,
+  BasicData,
 } from "@/api/list";
-import useLoading from "@/hooks/use-loading";
+
+defineOptions({
+  name: "BasicList", //不命名组件，keep-alive的include不属性生效
+});
 
 const Search = h(Icon, { icon: "iconamoon:search-light", width: 25 });
 const customColors = [
@@ -155,7 +156,7 @@ const customColors = [
 ];
 const type = ref("all");
 const input = ref("");
-let list = ref([]);
+let list = ref<BasicData[]>([]);
 const operationState = reactive({
   visible: false,
   formData: {},
@@ -185,30 +186,35 @@ const fetchDataList = async () => {
     setLoading(false);
   }
 };
+
 fetchDataList();
-const handleSizeChange = (val) => {
+
+const handleSizeChange = (val: number) => {
   pagination.currentPage = 1;
   pagination.pageSize = val;
   fetchDataList();
 };
-const handleCurrentChange = (val) => {
+
+const handleCurrentChange = (val: number) => {
   pagination.currentPage = val;
   fetchDataList();
 };
 
 // =========================== 操作 =======================
-const handleEdit = (row) => {
+const handleEdit = (row: BasicData) => {
   // dialogVisible.value = true;
   operationState.visible = true;
   operationState.formData = row;
   operationState.title = "任务编辑";
 };
+
 const handleAdd = () => {
   operationState.visible = true;
   operationState.formData = {};
   operationState.title = "任务新增";
 };
-const handleDelete = (id) => {
+
+const handleDelete = (id: string) => {
   ElMessageBox.confirm("确定删除该任务吗?", "删除任务", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -220,7 +226,7 @@ const handleDelete = (id) => {
   });
 };
 
-const onSubmit = async (data) => {
+const onSubmit = async (data: BasicData) => {
   const method = data.id ? editBasicList : addBasicList;
   operationState.loading = true;
   try {
