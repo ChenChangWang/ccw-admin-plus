@@ -1,0 +1,57 @@
+export default {
+  layout: {
+    header: {
+      userCenter: "用户中心",
+      userSettings: "用户设置",
+      logout: "退出登录",
+    },
+    footer: {
+      website: "官网",
+      document: "文档",
+    },
+    tabs: {
+      reload: "刷新当前",
+      close: "关闭当前",
+      closeLeft: "关闭左侧",
+      closeRight: "关闭右侧",
+      closeOther: "关闭其它",
+      closeAll: "全部关闭",
+    },
+    setting: {
+      navigationMode: "导航模式",
+      menuLayout: {
+        side: "侧边菜单布局",
+        top: "顶部菜单布局",
+        mix: "混合菜单布局",
+      },
+      navigationStyle: "导航风格",
+      topStyle: "顶栏样式",
+      sideStyle: "侧边栏样式",
+      light: "亮色",
+      dark: "暗黑",
+      interfaceSettings: "界面设置",
+      contentAreaWidth: "内容区域宽度",
+      contentWidth: {
+        fixed: "定宽",
+        fluid: "流式",
+      },
+      toppingHeader: "置顶顶栏",
+      autoHideHeader: "下滑时隐藏顶栏",
+      menuUniqueOpened: "菜单开启手风琴模式",
+      showRouteBreadcrumb: "显示全局面包屑导航",
+      showReload: "显示页面重置按钮",
+      openTabs: "开启多页签",
+      footer: "底部",
+      themeColor: "主题颜色",
+      weakMode: "色弱模式",
+      colors: {
+        primary: "主色",
+        success: "成功色",
+        warning: "警告色",
+        danger: "危险色",
+        error: "错误色",
+        info: "信息色",
+      },
+    },
+  },
+};

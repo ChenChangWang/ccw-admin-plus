@@ -1,0 +1,17 @@
+.avatar-group{
+  display: inline-block;
+  .el-avatar{
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    vertical-align: middle;
+    margin-left: -8px;
+    border: 1px solid var(--el-bg-color);
+    &:first-of-type{
+      margin-left: 0px;
+    }
+  }
+  .count-avatar{
+    font-size: 13px;
+  }
+}

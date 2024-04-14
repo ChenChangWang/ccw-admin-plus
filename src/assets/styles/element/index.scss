@@ -1,0 +1,36 @@
+@use "../var.scss" as var;
+
+//只需要重写你需要的即可
+$--colors: (
+  "white": #ffffff,
+  "black": #000000,
+  "primary": (
+    "base": var.$primary,
+  ),
+  "success": (
+    "base": var.$success,
+  ),
+  "warning": (
+    "base": var.$warning,
+  ),
+  "danger": (
+    "base": var.$danger,
+  ),
+  "error": (
+    "base": var.$error,
+  ),
+  "info": (
+    "base": var.$info,
+  ),
+);
+
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: $--colors,
+  $sm: var.$sm,
+  $md: var.$md,
+  $lg: var.$lg,
+  $xl: var.$xl
+);
+
+@use "./dark.scss";
+

@@ -1,0 +1,10 @@
+@use "./var" as *;
+
+:export {
+  primary:$primary;
+  success:$success;
+  warning:$warning;
+  danger:$danger;
+  error:$error;
+  info:$info;
+}

@@ -1,0 +1,57 @@
+export default {
+  layout: {
+    header: {
+      userCenter: "User Center",
+      userSettings: "User Settings",
+      logout: "Logout",
+    },
+    footer: {
+      website: "Website",
+      document: "Document",
+    },
+    tabs: {
+      reload:"reload",
+      close: "Close",
+      closeLeft: "Close Left",
+      closeRight: "Close Right",
+      closeOther: "Close Other",
+      closeAll: "Close All",
+    },
+    setting: {
+      navigationMode: "Navigation Mode",
+      menuLayout: {
+        side: "Side Menu Layout",
+        top: "Top Menu Layout",
+        mix: "Mix Menu Layout",
+      },
+      navigationStyle: "Navigation Style",
+      topStyle: "Top Style",
+      sideStyle: "Side Style",
+      light: "Light",
+      dark: "Dark",
+      interfaceSettings: "Interface Settings",
+      contentAreaWidth: "Content Area Width",
+      contentWidth: {
+        fixed: "Fixed",
+        fluid: "Fluid",
+      },
+      toppingHeader: "Topping Header",
+      autoHideHeader: "Auto Hide Header",
+      menuUniqueOpened: "Menu Unique Opened",
+      showRouteBreadcrumb: "Show Route Breadcrumb",
+      showReload: "Show Reload",
+      openTabs: "Open Tabs",
+      footer: "Footer",
+      themeColor: "Theme Color",
+      weakMode: "Weak Mode",
+      colors: {
+        primary: "Primary",
+        success: "Success",
+        warning: "Warning",
+        danger: "Danger",
+        error: "Error",
+        info: "info",
+      },
+    },
+  },
+};

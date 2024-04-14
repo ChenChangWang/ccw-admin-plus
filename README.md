@@ -31,7 +31,7 @@
 - 获取项目代码
 
 ```bash
-git clone https://gitee.com/chenchangwang/ccw-admin-plus.git
+git clone https://github.com/ChenChangWang/ccw-admin-plus.git
 ```
 
 - 安装依赖
@@ -63,12 +63,12 @@ npm build
 
 非常欢迎您的贡献，你可以通过以下方式一起共建 :smiley:：
 
-- 通过 [Issue](https://gitee.com/chenchangwang/ccw-admin-plus/issues) 报告 bug 或进行咨询。
-- 提交 [Pull Request](https://gitee.com/chenchangwang/ccw-admin-plus/pulls) 改进 Admin Plus 的代码。
+- 通过 [Issue](https://github.com/ChenChangWang/ccw-admin-plus/issues) 报告 bug 或进行咨询。
+- 提交 [Pull Request](https://github.com/ChenChangWang/ccw-admin-plus/pulls) 改进 Admin Plus 的代码。
 
 ## :busts_in_silhouette: 维护者
 
-[@chenchangwang](https://gitee.com/chenchangwang)
+[@chenchangwang](https://github.com/ChenChangWang)
 
 ## 💬 交流
 
