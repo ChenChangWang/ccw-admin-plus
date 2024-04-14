@@ -4,14 +4,15 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import ArticlesList from "@/views/search/components/articles-list.vue";
 import useLoading from "@/hooks/use-loading";
-import { getArticleList } from "@/api/search";
+import { ArticleData, getArticleList } from "@/api/search";
 
 const [loading, setLoading] = useLoading(false);
-const dataList = ref([]);
+const dataList = ref<ArticleData[]>([]);
+
 const fetchDataList = async () => {
   setLoading(true);
   try {
@@ -27,6 +28,7 @@ const fetchDataList = async () => {
     setLoading(false);
   }
 };
+
 fetchDataList();
 </script>
 

@@ -61,17 +61,18 @@
   </el-dropdown>
 </template>
 
-<script setup>
-import { computed, reactive, ref } from "vue";
+<script lang="ts" setup>
+import { computed, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import MessageList from "./message-list.vue";
 import NoticeList from "./notice-list.vue";
 import TodoList from "./todo-list.vue";
 
-const currentTab = ref("message");
-const messageRef = ref();
-const noticeRef = ref();
-const todoRef = ref();
+type Tab = "message" | "notice" | "todo";
+const currentTab = ref<Tab>("message");
+const messageRef = ref<InstanceType<typeof MessageList>>();
+const noticeRef = ref<InstanceType<typeof NoticeList>>();
+const todoRef = ref<InstanceType<typeof TodoList>>();
 
 const messageUnRead = computed(() => {
   return messageRef.value?.unReadTotal;
@@ -89,6 +90,7 @@ const totalUnRead = computed(() => {
     (todoUnRead.value || 0)
   );
 });
+
 const allRead = () => {
   switch (currentTab.value) {
     case "message":

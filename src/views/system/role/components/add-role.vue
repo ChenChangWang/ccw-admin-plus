@@ -39,10 +39,11 @@
   </el-drawer>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive, computed } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
-const ruleFormRef = ref();
+import {ElMessage, FormInstance, FormRules} from "element-plus";
+
+const ruleFormRef = ref<FormInstance>();
 const model = defineModel();
 const dialog = computed({
   get: () => model.value,
@@ -56,11 +57,12 @@ const form = reactive({
   explain: "",
   isDefault: false,
 });
-const rules = reactive({
+
+const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
 });
 
-const submitForm = async (formEl) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {

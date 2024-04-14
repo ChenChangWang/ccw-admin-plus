@@ -52,30 +52,32 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, watch, onMounted, nextTick, onUpdated } from "vue";
 import { useTabsNavStore } from "@/store";
 import { routeEqual } from "@/utils/util";
 import TabItem from "./tab-item.vue";
 import { useResize } from "@/hooks/use-resize";
-import { useRoute } from "vue-router";
+import { RouteLocationNormalized, useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
 import TabClose from "./tab-close.vue";
 import Draggable from "vuedraggable";
 import bus from "@/utils/bus";
 import { HOME_PATH } from "@/router/constants";
+import { TabsNavProps } from "@/store/modules/tabs-nav/types.ts";
+import type { OptionType, Scrollable } from "./types.ts";
 
-const scrollable = ref(false);
-const navWrapRef = ref();
-const navScrollRef = ref();
-const navRef = ref();
+const scrollable = ref<false | Scrollable>(false);
+const navWrapRef = ref<HTMLDivElement>();
+const navScrollRef = ref<HTMLDivElement>();
+const navRef = ref<HTMLDivElement>();
 const navOffset = ref(0);
 const currentRoute = useRoute();
 const router = useRouter();
 const tabsNavStore = useTabsNavStore();
 
-const isActive = (item) => {
+const isActive = (item: TabsNavProps) => {
   return routeEqual(item, currentRoute);
 };
 
@@ -89,8 +91,7 @@ const tagList = computed({
 });
 
 // =========================== tab相关处理 =======================
-
-const toPage = (route) => {
+const toPage = (route: TabsNavProps) => {
   let { name, query, path } = route;
   router.push({
     name,
@@ -99,7 +100,11 @@ const toPage = (route) => {
   });
 };
 
-const handleTagsOption = (type, route, currentRoute) => {
+const handleTagsOption = (
+  type: OptionType,
+  route: TabsNavProps,
+  currentRoute: RouteLocationNormalized,
+) => {
   const tagList = tabsNavStore.getTabList;
   let list = tagList;
   switch (type) {
@@ -146,7 +151,10 @@ const handleTagsOption = (type, route, currentRoute) => {
   tabsNavStore.setTagList(list);
 };
 
-const handleClose = (route, currentRoute) => {
+const handleClose = (
+  route: TabsNavProps,
+  currentRoute: RouteLocationNormalized,
+) => {
   const tagList = tabsNavStore.getTabList;
   const list = tagList.filter((item) => !routeEqual(item, route));
   if (routeEqual(currentRoute, route)) {
@@ -254,6 +262,7 @@ watch(currentRoute, async () => {
 onMounted(() => {
   setTimeout(() => scrollToActiveTab(), 0);
 });
+
 useResize(navWrapRef, update);
 
 onUpdated(() => {

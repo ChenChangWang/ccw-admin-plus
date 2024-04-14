@@ -143,16 +143,28 @@
   </el-drawer>
 </template>
 
-<script setup>
-import { ref, reactive, computed, watch } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+<script lang="ts" setup>
+import { ref, reactive, computed, watch, PropType } from "vue";
+import {
+  ElMessage,
+  ElMessageBox,
+  FormInstance,
+  FormRules,
+  UploadFile,
+  UploadFiles,
+  UploadProgressEvent,
+  UploadRawFile,
+  UploadRequestOptions,
+} from "element-plus";
 import { pcTextArr } from "element-china-area-data";
 import RoleSelector from "@/views/system/user/components/role-selector.vue";
 import statusOptions from "../statusOptions";
 import { Icon } from "@iconify/vue";
 import { accountUpload } from "@/api/account";
+import type { UserData } from "@/api/system.ts";
+import type { UploadAjaxError } from "element-plus/es/components/upload/src/ajax";
 
-const ruleFormRef = ref();
+const ruleFormRef = ref<FormInstance>();
 const model = defineModel();
 const dialog = computed({
   get: () => model.value,
@@ -160,8 +172,7 @@ const dialog = computed({
     model.value = val;
   },
 });
-const props = defineProps({ current: Object });
-
+const props = defineProps({ current: Object as PropType<UserData> });
 const form = reactive({
   avatar: "",
   name: "",
@@ -175,8 +186,7 @@ const form = reactive({
   birthday: "",
   introduction: "",
 });
-
-const rules = reactive({
+const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   phone: [{ required: true, message: "请输入手机号", trigger: "blur" }],
   email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
@@ -189,13 +199,13 @@ watch([() => props.current, () => dialog.value], () => {
   }
   resetForm();
   for (let key in form) {
-    form[key] = props.current[key];
+    form[key] = props.current?.[key];
   }
 });
 
 // =========================== 头像上传 =======================
 
-const uploadAction = async (option) => {
+const uploadAction = async (option: UploadRequestOptions) => {
   let param = new FormData();
   param.append("file", option.file);
   const onUploadProgress = (evt) => {
@@ -209,20 +219,35 @@ const uploadAction = async (option) => {
     });
     option.onSuccess(res);
   } catch (error) {
-    option.onError(error);
+    option.onError(error as UploadAjaxError);
   }
 };
-const success = (response, uploadFile, uploadFiles) => {
+const success = (
+  response: any,
+  uploadFile: UploadFile,
+  uploadFiles: UploadFiles,
+) => {
   form.avatar = response.data.url;
   ElMessage.success("上传成功！");
 };
-const error = (error, uploadFile, uploadFiles) => {
+
+const error = (
+  error: Error,
+  uploadFile: UploadFile,
+  uploadFiles: UploadFiles,
+) => {
   console.log("error", error, uploadFile, uploadFiles);
 };
-const progress = (evt, uploadFile, uploadFiles) => {
+
+const progress = (
+  evt: UploadProgressEvent,
+  uploadFile: UploadFile,
+  uploadFiles: UploadFiles,
+) => {
   console.log("progress", evt, uploadFile, uploadFiles);
 };
-const beforeUpload = (file) => {
+
+const beforeUpload = (file: UploadRawFile) => {
   const type = ["image/jpeg", "image/jpg", "image/png"];
   if (type.indexOf(file.type) === -1) {
     ElMessage.error("上传文件必须为jpeg、jpg、png类型！");
@@ -236,7 +261,7 @@ const beforeUpload = (file) => {
 
 // =========================== 表单操作 =======================
 
-const submitForm = async (formEl) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {

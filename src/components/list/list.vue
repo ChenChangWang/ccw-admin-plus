@@ -9,7 +9,7 @@
     </ul>
 
     <slot name="load" v-if="loading">
-      <Spin fix> </Spin>
+      <Spin fix></Spin>
     </slot>
 
     <div class="list-footer" v-if="$slots.footer">
@@ -18,9 +18,10 @@
   </div>
 </template>
 
-<script setup>
-import { computed, provide, ref } from "vue";
+<script lang="ts" setup>
+import { computed, provide, PropType } from "vue";
 import Spin from "@/components/spin/index.vue";
+import {LIST_CONTEXT_KEY, ListProvider} from "@/components/list/constants.ts";
 
 const props = defineProps({
   /**
@@ -50,14 +51,14 @@ const props = defineProps({
    * vertical: action在底部 extra在最右侧
    */
   itemLayout: {
-    validator(value, props) {
+    validator(value:string, props) {
       return ["horizontal", "vertical"].includes(value);
     },
     default: "horizontal",
   },
 });
 
-provide("listContextKey", {
+provide<ListProvider>(LIST_CONTEXT_KEY, {
   itemLayout: props.itemLayout,
 });
 
@@ -84,30 +85,37 @@ const classes = computed(() => {
     display: flex;
     align-items: center;
     padding: 12px 0;
+
     .list-item-main {
       flex: 1;
     }
+
     .list-item-meta {
       display: flex;
       flex: 1;
       align-items: flex-start;
       font-size: 0;
+
       .list-item-meta-avatar {
         margin-right: 16px;
         background: transparent;
+
         .el-avatar {
           background: transparent;
         }
       }
+
       .list-item-meta-content {
         color: var(--el-text-color-primary);
       }
+
       .list-item-meta-title {
         font-weight: 500;
         color: var(--el-text-color-primary);
         font-size: 14px;
         line-height: 22px;
       }
+
       .list-item-meta-description {
         color: var(--el-text-color-secondary);
         font-size: 14px;
@@ -115,12 +123,14 @@ const classes = computed(() => {
         margin-top: 4px;
       }
     }
+
     .list-item-action {
       flex: 0 0 auto;
       margin-left: 36px;
       padding: 0;
       font-size: 0;
       list-style: none;
+
       > li {
         position: relative;
         display: inline-block;
@@ -130,6 +140,7 @@ const classes = computed(() => {
         line-height: 22px;
         text-align: center;
         cursor: pointer;
+
         &:after {
           content: "";
           position: absolute;
@@ -140,9 +151,11 @@ const classes = computed(() => {
           height: 14px;
           background-color: var(--el-border-color-light);
         }
+
         &:first-child {
           padding-left: 0;
         }
+
         &:last-child {
           &:after {
             display: none;
@@ -151,6 +164,7 @@ const classes = computed(() => {
       }
     }
   }
+
   .list-header {
     padding-top: 12px;
     padding-bottom: 12px;
@@ -166,10 +180,12 @@ const classes = computed(() => {
 .list-split {
   .list-item {
     border-bottom: 1px solid var(--el-border-color);
+
     &:last-child {
       border-bottom: none;
     }
   }
+
   .list-header {
     border-bottom: 1px solid var(--el-border-color);
   }
@@ -183,15 +199,18 @@ const classes = computed(() => {
 .list-bordered {
   border: 1px solid var(--el-border-color);
   border-radius: 6px;
+
   .list-item {
     padding-right: 24px;
     padding-left: 24px;
     border-bottom: 1px solid var(--el-border-color-light);
   }
+
   .list-header {
     padding-right: 24px;
     padding-left: 24px;
   }
+
   .list-footer {
     padding-right: 24px;
     padding-left: 24px;
@@ -202,9 +221,11 @@ const classes = computed(() => {
 .list-vertical {
   .list-item {
     align-items: initial;
+
     .list-item-extra {
       margin-left: 40px;
     }
+
     .list-item-meta {
       margin-bottom: 16px;
 
@@ -215,6 +236,7 @@ const classes = computed(() => {
         line-height: 24px;
       }
     }
+
     .list-item-action {
       margin-top: 16px;
       margin-left: auto;

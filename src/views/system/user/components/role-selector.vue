@@ -20,9 +20,10 @@
   </el-select>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from "vue";
 import { getRoleList } from "@/api/system";
+
 const model = defineModel();
 const role = computed({
   get: () => model.value,
@@ -30,13 +31,17 @@ const role = computed({
     model.value = val;
   },
 });
-const roleOptions = ref([]);
+const roleOptions = ref<
+  { label: string; value: string; concatLabel: string }[]
+>([]);
+
 const fetchRoleList = async () => {
   try {
     const { data } = await getRoleList({
       currentPage: 1,
       pageSize: 999,
     });
+
     roleOptions.value = data.list.map((item) => {
       return {
         label: item.explain,

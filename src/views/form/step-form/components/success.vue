@@ -27,13 +27,16 @@
   </el-result>
 </template>
 
-<script setup>
-import { defineEmits, ref } from "vue";
+<script lang="ts" setup>
+import { defineEmits, PropType, ref } from "vue";
 import { useResponsive } from "@/hooks/use-responsive";
 import { breakpointQueryMap } from "@/utils/media-query-listener";
-const props = defineProps({
+import type { SubmitData } from "@/views/form/step-form/types";
+import type { FormProps } from "element-plus";
+
+defineProps({
   submitData: {
-    type: Object,
+    type: Object as PropType<SubmitData>,
     default: () => {
       return {
         payAccount: String,
@@ -45,7 +48,7 @@ const props = defineProps({
     },
   },
 });
-const labelPosition = ref("right");
+const labelPosition = ref<FormProps["labelPosition"]>("right");
 
 const emits = defineEmits(["handleStep"]);
 useResponsive(

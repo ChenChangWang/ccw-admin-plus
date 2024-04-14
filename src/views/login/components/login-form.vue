@@ -50,17 +50,18 @@
   </el-form>
 </template>
 
-<script setup>
-import { reactive, ref, h, computed } from "vue";
-import { ElMessage } from "element-plus";
+<script lang="ts" setup>
+import { reactive, ref, computed } from "vue";
+import { ElForm, ElMessage, FormInstance } from "element-plus";
 import useLoading from "@/hooks/use-loading";
 import { useTabsNavStore, useUserStore } from "@/store";
 import { useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
 import { useI18n } from "vue-i18n";
+import { LoginParam } from "@/api/user";
 
-const ruleFormRef = ref();
-const userInfo = reactive({
+const ruleFormRef = ref<FormInstance>();
+const userInfo = reactive<LoginParam>({
   username: "admin",
   password: "123456",
   autoLogin: false,
@@ -85,7 +86,7 @@ const handleSubmit = () => {
   if (loading.value) {
     return;
   }
-  ruleFormRef.value.validate(async (valid) => {
+  ruleFormRef.value?.validate(async (valid) => {
     if (!valid) {
       return;
     }
@@ -97,7 +98,7 @@ const handleSubmit = () => {
       router.push({ path: "/" });
     } catch (error) {
       ElMessage({
-        message: error.message,
+        message: (error as Error).message,
         type: "error",
       });
     } finally {
@@ -106,7 +107,7 @@ const handleSubmit = () => {
   });
 };
 
-const resetForm = (formEl) => {
+const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };

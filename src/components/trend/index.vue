@@ -14,13 +14,14 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
+import { defineProps, PropType } from "vue";
 import { Icon } from "@iconify/vue";
-const props = defineProps({
+
+defineProps({
   flag: {
-    type:String,
-    validator(value) {
+    type: String as PropType<"up" | "down">,
+    validator(value: string): boolean {
       return ["up", "down"].includes(value);
     },
   },
@@ -31,6 +32,7 @@ const props = defineProps({
 .trend {
   display: inline-flex;
   align-items: center;
+
   .icon {
     margin-left: 3px;
   }

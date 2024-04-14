@@ -36,11 +36,10 @@
     </template>
   </el-dropdown>
 </template>
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { useUserStore } from "@/store";
 import { useRouter } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import useLoading from "@/hooks/use-loading";
 import { Icon } from "@iconify/vue";
 
@@ -48,7 +47,7 @@ const userStore = useUserStore();
 const router = useRouter();
 const [loading, setLoading] = useLoading(false);
 
-const command = (val) => {
+const command = (val: "user" | "set" | "logout") => {
   if (loading.value) {
     return;
   }
@@ -64,6 +63,7 @@ const command = (val) => {
       break;
   }
 };
+
 const handleLogout = async () => {
   setLoading(true);
   await userStore.logout();

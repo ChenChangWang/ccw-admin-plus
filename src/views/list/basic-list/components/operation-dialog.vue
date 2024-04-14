@@ -6,12 +6,12 @@
       </span>
     </template>
     <el-form
+      class="full-form"
       ref="ruleFormRef"
       :model="form"
       :rules="rules"
-      class="full-form"
-      label-position="top"
       label-width="100px"
+      label-position="top"
       status-icon
     >
       <el-form-item label="任务名称" prop="title">
@@ -21,9 +21,9 @@
       <el-form-item label="开始时间" prop="startDate">
         <el-date-picker
           v-model="form.startDate"
-          format="YYYY-MM-DD HH:mm:ss"
-          placeholder="请选择开始时间"
           type="datetime"
+          placeholder="请选择开始时间"
+          format="YYYY-MM-DD HH:mm:ss"
           value-format="YYYY-MM-DD HH:mm:ss"
         />
       </el-form-item>
@@ -42,15 +42,15 @@
       <el-form-item label="任务描述" prop="description">
         <el-input
           v-model="form.description"
-          placeholder="请输入任务描述"
           type="textarea"
+          placeholder="请输入任务描述"
         />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="onCancel()">取消</el-button>
-        <el-button :loading="loading" type="primary" @click="onSubmit()">
+        <el-button type="primary" @click="onSubmit()" :loading="loading">
           确定
         </el-button>
       </span>
@@ -58,24 +58,26 @@
   </el-dialog>
 </template>
 
-<script setup>
-import { onMounted, ref, reactive, watch, nextTick } from "vue";
+<script lang="ts" setup>
+import { ref, reactive, watch, nextTick, PropType } from "vue";
+import { FormInstance, FormRules } from "element-plus";
+import { BasicData } from "@/api/list.ts";
+
 const model = defineModel();
 const props = defineProps({
-  formData: Object,
+  formData: Object as PropType<BasicData>,
   title: String,
   loading: Boolean,
 });
 const emit = defineEmits(["onSubmit"]);
-
-const ruleFormRef = ref();
-let form = reactive({
+const ruleFormRef = ref<FormInstance>();
+let form = reactive<BasicData>({
   title: "",
   startDate: "",
   name: "",
   description: "",
 });
-const rules = reactive({
+const rules = reactive<FormRules>({
   title: [{ required: true, message: "请输入任务名称", trigger: "blur" }],
   startDate: [
     {
@@ -95,8 +97,11 @@ watch(model, (value) => {
   }
   resetForm();
   nextTick(() => {
+    if (!props.formData) {
+      return;
+    }
     Object.keys(props.formData).forEach((key) => {
-      form[key] = props.formData[key];
+      form[key] = props.formData?.[key];
     });
   });
 });
@@ -113,7 +118,7 @@ const onCancel = () => {
   model.value = false;
 };
 const onSubmit = async () => {
-  await ruleFormRef.value.validate((valid, fields) => {
+  await ruleFormRef.value?.validate((valid, fields) => {
     if (valid) {
       emit("onSubmit", form);
     } else {

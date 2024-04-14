@@ -80,7 +80,7 @@
     </div>
   </el-card>
 </template>
-<script setup>
+<script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
 import useLoading from "@/hooks/use-loading";
 import { getTopSearchData, getSearchUserData } from "@/api/dashboard";
@@ -88,8 +88,9 @@ import { Icon } from "@iconify/vue";
 import Trend from "@/components/trend/index.vue";
 import VChart from "vue-echarts";
 import TableColumn from "@/components/table-column/index.vue";
+import {Pagination} from "@/api";
 
-const pagination = reactive({
+const pagination = reactive<Pagination>({
   currentPage: 1,
   pageSize: 5,
   total: 0,
@@ -155,7 +156,7 @@ const fetchUseSearchDataList = async () => {
   setUseSearchLoading(true);
   try {
     const { data } = await getSearchUserData();
-    data.data.forEach(({ x, y }) => {
+    data.forEach(({ x, y }) => {
       optionData.value[0].push(x);
       optionData.value[1].push(y);
     });

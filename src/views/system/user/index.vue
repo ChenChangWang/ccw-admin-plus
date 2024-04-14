@@ -157,16 +157,15 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { reactive, ref, h } from "vue";
 import { QueryForm, QueryFormItem } from "@/components/query-form";
 import useLoading from "@/hooks/use-loading";
-import { getUserList } from "@/api/system";
-import { useI18n } from "vue-i18n";
-import TableColumn from "@/components/table-column/index.vue";
+import {getUserList, UserData} from "@/api/system";
+import TableColumn, {TableColumnData} from "@/components/table-column/index.vue";
 import TableToolbar from "@/components/table-toolbar/index.vue";
 import useTableSelection from "@/hooks/use-table-selection";
-import { ElMessage, ElMessageBox } from "element-plus";
+import {ElMessage, ElMessageBox, TableInstance} from "element-plus";
 import AddUser from "./components/add-user.vue";
 import EditUser from "./components/edit-user.vue";
 import statusOptions from "./statusOptions";
@@ -175,6 +174,10 @@ import useTable from "@/hooks/use-table";
 defineOptions({
   name: "User", //不命名组件，keep-alive的include不属性生效
 });
+
+type State = { dialog: boolean; current: UserData | null };
+
+
 const statusMap = {
   normal: { label: "正常", type: "success" },
   freeze: { label: "冻结", type: "error" },
@@ -189,13 +192,12 @@ const queryForm = reactive({
   status: "",
   createDate: "",
 });
-let tableData = ref([]);
-const { t } = useI18n();
-const formRef = ref();
-const tableRef = ref();
+let tableData = ref<UserData[]>([]);
+const formRef = ref<InstanceType<typeof QueryForm>>();
+const tableRef = ref<TableInstance>();
 const addDialog = ref(false);
-const editState = reactive({ dialog: false, current: null });
-const columns = ref([
+const editState = reactive<State>({ dialog: false, current: null });
+const columns = ref<TableColumnData[]>([
   { type: "selection", width: 55 },
   { prop: "name", slotName: "name", label: "用户名", "min-width": 110 },
   { prop: "loginUser", label: "登录账号", "min-width": 110 },
@@ -227,7 +229,6 @@ const {
   handleSelectChange,
   handleSelectAll,
   multipleSelection,
-  clearSelection,
 } = useTableSelection(tableData, tableRef);
 
 const fetchDataList = async () => {
@@ -283,7 +284,7 @@ const onAdd = () => {
   addDialog.value = true;
 };
 
-const onEdit = (row) => {
+const onEdit = (row:UserData) => {
   editState.current = row;
   editState.dialog = true;
 };

@@ -59,8 +59,8 @@
               cancel-button-text="取消"
               title="是否要删除此行?"
               :hide-after="100"
-              @confirm="onDelete(scope.$index)"
               :width="154"
+              @confirm="onDelete(scope.$index)"
             >
               <template #reference>
                 <el-button type="danger" size="small" :disabled="isAddIng">
@@ -79,12 +79,20 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { reactive, computed, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import { isEmpty } from "@/utils/util";
 import { ElMessage } from "element-plus";
-const tableData = reactive([
+
+interface TableData {
+  name: string;
+  workId: string;
+  department: string;
+  isAdd?: boolean;
+}
+
+const tableData = reactive<TableData[]>([
   {
     name: "张三",
     workId: "001",
@@ -101,12 +109,14 @@ const tableData = reactive([
     department: "产品部",
   },
 ]);
+
 const isAddIng = computed(() => {
   if (tableData.length) {
     return tableData[tableData.length - 1].isAdd;
   }
   return false;
 });
+
 const onAdd = () => {
   if (isAddIng.value) {
     return;
@@ -118,7 +128,8 @@ const onAdd = () => {
     department: "",
   });
 };
-const onSubmitAdd = (index) => {
+
+const onSubmitAdd = (index: number) => {
   const { name, workId, department } = tableData[index];
   if (isEmpty(name) || isEmpty(workId) || isEmpty(department)) {
     ElMessage.error("请填写完整的成员信息");
@@ -126,10 +137,12 @@ const onSubmitAdd = (index) => {
   }
   delete tableData[index].isAdd;
 };
-const onDelete = (index) => {
+
+const onDelete = (index: number) => {
   tableData.splice(index, 1);
 };
-const editor = (row) => {
+
+const editor = (row: TableData) => {
   if (isAddIng.value) {
     return;
   }

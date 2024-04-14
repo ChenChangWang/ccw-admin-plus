@@ -48,16 +48,17 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, ref } from "vue";
 import VChart from "vue-echarts";
 import useLoading from "@/hooks/use-loading";
-import { getSalesData } from "@/api/dashboard";
+import { getSalesData, ShopData } from "@/api/dashboard";
 import numeral from "numeral";
 import { getTimeDistance } from "@/utils/util";
+import { TimeDistance } from "@/utils/types.ts";
 
-const salesData = ref([[], []]);
-const shopData = ref([]);
+const salesData = ref<[string[], number[]]>([[], []]);
+const shopData = ref<ShopData[]>([]);
 const date = ref(getTimeDistance("day")); // "YYYY-MM-DD HH:mm:ss"
 const [loading, setLoading] = useLoading(true);
 
@@ -102,7 +103,7 @@ const option = computed(() => {
   };
 });
 
-const selectDate = (type) => {
+const selectDate = (type: TimeDistance) => {
   date.value = getTimeDistance(type);
 };
 
@@ -120,6 +121,7 @@ const fetchDataList = async () => {
     setLoading(false);
   }
 };
+
 fetchDataList();
 </script>
 
@@ -128,19 +130,23 @@ fetchDataList();
   .sales-item-label {
     margin: 0 0 10px 0;
   }
+
   .sales-chart-warp {
     height: 260px;
     width: 100%;
   }
+
   .ranking {
     list-style-type: none;
     padding: 0;
     margin: 0;
+
     li {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-top: 14px;
+
       .circle {
         width: 24px;
         height: 24px;
@@ -148,18 +154,21 @@ fetchDataList();
         text-align: center;
         font-size: 12px;
         margin-right: 8px;
+
         &.active {
           background-color: var(--el-color-primary-light-9);
         }
       }
     }
   }
+
   .card-header-extra {
     .card-header-extra-options {
       > a {
         margin-left: 16px;
       }
     }
+
     .el-date-editor {
       width: 250px;
     }

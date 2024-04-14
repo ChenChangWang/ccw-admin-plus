@@ -64,19 +64,29 @@
   </el-card>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { reactive, ref, computed } from "vue";
 import { QueryForm, QueryFormItem } from "@/components/query-form";
+import type { ComponentSize, FormRules } from "element-plus";
 
+type Type = "private" | "public" | "";
+interface RuleForm {
+  name: string;
+  desc: string;
+  executor: string;
+  director: string;
+  date: string;
+  type: Type;
+}
 const span = [
   [0, 24, "top"],
   [513, 12, "top"],
   [701, 12, "top"],
   [Infinity, 8, "top"],
 ];
-const formSize = ref("default");
-const ruleFormRef = ref();
-const ruleForm = reactive({
+const formSize = ref<ComponentSize>("default");
+const ruleFormRef = ref<InstanceType<typeof QueryForm>>();
+const ruleForm = reactive<RuleForm>({
   name: "",
   desc: "",
   executor: "",
@@ -84,12 +94,10 @@ const ruleForm = reactive({
   date: "",
   type: "",
 });
-
 const formRef = computed(() => {
   return ruleFormRef.value?.formRef;
 });
-
-const rules = reactive({
+const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入任务名", trigger: "blur" }],
   desc: [{ required: true, message: "请输入任务描述", trigger: "blur" }],
   executor: [
@@ -115,6 +123,7 @@ const rules = reactive({
     },
   ],
 });
+
 const submitForm = () => {
   if (!formRef.value) return;
   return formRef.value.validate();

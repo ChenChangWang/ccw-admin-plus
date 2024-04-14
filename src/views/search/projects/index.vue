@@ -41,7 +41,8 @@
     />
   </div>
 </template>
-<script>
+
+<script lang="ts">
 const categoryOptions = Array.from({ length: 24 }).map((_, index) => {
   return {
     value: `value${index + 1}`,
@@ -66,23 +67,26 @@ const attarSpan = {
   xl: 6,
 };
 </script>
-<script setup>
+
+<script lang="ts" setup>
 import { reactive, ref } from "vue";
 import SearchHeader from "../components/search-header.vue";
 import { TagItem, TagSelect } from "@/components/tag-select";
 import useLoading from "@/hooks/use-loading";
-import { getProjectList } from "@/api/search";
+import { getProjectList, ProjectData, ProjectParma } from "@/api/search";
 import ProjectsList from "../components/projects-list.vue";
 
 defineOptions({
   name: "Projects", //不命名组件，keep-alive的include不属性生效
 });
+
 const form = reactive({
   categoryCheckList: [],
   sort: "latestCreate",
 });
-const dataList = ref([]);
+const dataList = ref<ProjectData[]>([]);
 const [loading, setLoading] = useLoading(false);
+
 const fetchDataList = async () => {
   setLoading(true);
   try {
@@ -90,7 +94,8 @@ const fetchDataList = async () => {
       currentPage: 1,
       pageSize: 10,
       ...form,
-    });
+    } as ProjectParma);
+
     dataList.value = data.list;
   } catch (err) {
   } finally {

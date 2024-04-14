@@ -31,15 +31,16 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-import AvatarGroup from "@/components/avatar-group";
+<script lang="ts" setup>
+import AvatarGroup from "@/components/avatar-group/index.tsx";
 import Spin from "@/components/spin/index.vue";
+import type { PropType } from "vue";
+import type { ProjectData } from "@/api/search.ts";
 
-const props = defineProps({
+defineProps({
   loading: Boolean,
   dataList: {
-    type: Array,
+    type: Array as PropType<ProjectData[]>,
     required: true,
   },
   attarSpan: Object,

@@ -1,17 +1,32 @@
 <template>
-  <div :style="style" class="grid">
+  <div class="grid" :style="style">
     <slot />
   </div>
 </template>
 
-<script setup>
-import { ref, getCurrentInstance, provide, watch, computed } from "vue";
+<script lang="ts" setup>
+import {
+  ref,
+  getCurrentInstance,
+  provide,
+  watch,
+  computed,
+  PropType,
+  ComponentInternalInstance,
+  Ref,
+} from "vue";
 import {
   gridContextKey,
+  GridItemContext,
   gridItemContextKey,
+  GridItemData,
+  GridItemProvider,
+  GridProvider,
 } from "@/components/grid/constants";
-import useOrderedChildren from "@/hooks/use-ordered-children.js";
+import useOrderedChildren from "@/hooks/use-ordered-children";
 import { useResponsiveState } from "@/hooks/use-responsive-state";
+import type { BreakPointResponsiveState } from "@/hooks/use-responsive-state";
+
 import { isEmpty } from "@/utils/util";
 
 const props = defineProps({
@@ -42,38 +57,34 @@ const props = defineProps({
    * 后续如果需要支持自定义断点 后续再说
    */
   responsive: {
-    type: Object,
+    type: Object as PropType<BreakPointResponsiveState>,
     default: () => {
       return {};
     },
   },
 });
-/*
-       ["xl"]: { cols: 3, rowGap: 16, colGap: 16 },
-        ["sm"]: { cols: 2, rowGap: 12, colGap: 12 },
-        ["xs"]: { cols: 1, rowGap: 6, colGap: 6 },
-        */
-let gridItemContext = ref({});
-const instance = getCurrentInstance();
+let gridItemContext = ref<GridItemContext>({});
+const instance: ComponentInternalInstance | null = getCurrentInstance();
 
 // =========================== hook =======================
 const {
   children: gridItems,
   addChild: registerGrid,
   removeChild: unregisterGrid,
-} = useOrderedChildren(instance, "GridItem");
+} = useOrderedChildren<GridItemData>(instance!, "GridItem");
 const responsiveState = useResponsiveState(props.responsive, {
   cols: props.cols,
   rowGap: props.rowGap,
   colGap: props.colGap,
 });
 
-provide(gridContextKey, {
+provide<GridProvider>(gridContextKey, {
   gridItems,
   registerGrid,
   unregisterGrid,
 });
-provide(gridItemContextKey, gridItemContext);
+
+provide<GridItemProvider>(gridItemContextKey, gridItemContext);
 
 const style = computed(() => {
   const { cols, rowGap, colGap } = responsiveState.value;
@@ -120,7 +131,7 @@ watch(
 );
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .grid {
   display: grid;
 }

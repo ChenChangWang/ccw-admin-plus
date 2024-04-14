@@ -62,24 +62,26 @@
   </el-row>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { h, reactive, ref, defineEmits } from "vue";
 import { useResponsive } from "@/hooks/use-responsive";
 import { breakpointQueryMap } from "@/utils/media-query-listener";
 import { Icon } from "@iconify/vue";
+import type { SubmitData } from "@/views/form/step-form/types.ts";
+import type { FormInstance, FormProps, FormRules } from "element-plus";
 
 const AmountIcon = h(Icon, { icon: "fa:usd", width: 25 });
 const emits = defineEmits(["handleStep"]);
-const labelPosition = ref("right");
-const ruleFormRef = ref();
-const ruleForm = reactive({
+const labelPosition = ref<FormProps["labelPosition"]>("right");
+const ruleFormRef = ref<FormInstance>();
+const ruleForm = reactive<SubmitData>({
   payAccount: "admin@aa.com",
   receiverMode: "alipay",
   receiverAccount: "test@aa.com",
   receiverName: "张三",
   amount: 500,
 });
-const rules = reactive({
+const rules = reactive<FormRules>({
   payAccount: [
     { required: true, message: "请选择付款账号", trigger: "change" },
   ],
@@ -100,7 +102,7 @@ useResponsive(
   { query: breakpointQueryMap.xs },
 );
 
-const onNext = async (formEl) => {
+const onNext = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {

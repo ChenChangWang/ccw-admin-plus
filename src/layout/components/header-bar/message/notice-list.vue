@@ -1,9 +1,9 @@
 <template>
-  <el-scrollbar v-loading="loading" class="notice-list" height="240px">
+  <el-scrollbar height="240px" class="notice-list" v-loading="loading">
     <el-empty
       v-if="!list || !list.length"
-      :image-size="70"
       description="暂无数据"
+      :image-size="70"
     />
     <template v-else>
       <div
@@ -23,19 +23,17 @@
   </el-scrollbar>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import useLoading from "@/hooks/use-loading";
 import {
   getNoticeList,
   noticeRead,
   noticeAllRead,
-  noticeClear,
+  noticeClear, NoticeData,
 } from "@/api/message";
 
-const props = defineProps({});
-
-const list = ref([]);
+const list = ref<NoticeData[]>([]);
 const unReadTotal = ref();
 const [loading, setLoading] = useLoading(false);
 const fetchData = async () => {
@@ -49,9 +47,10 @@ const fetchData = async () => {
     setLoading(false);
   }
 };
+
 fetchData();
 
-const handleRead = async (item) => {
+const handleRead = async (item:NoticeData) => {
   if (item.isRead) {
     return;
   }
@@ -63,6 +62,7 @@ const handleRead = async (item) => {
     setLoading(false);
   }
 };
+
 const allRead = async () => {
   if (!list.value || !list.value.length) {
     return;
@@ -75,6 +75,7 @@ const allRead = async () => {
     setLoading(false);
   }
 };
+
 const clear = async () => {
   if (!list.value || !list.value.length) {
     return;
@@ -87,6 +88,7 @@ const clear = async () => {
     setLoading(false);
   }
 };
+
 defineExpose({
   allRead,
   clear,
@@ -94,7 +96,7 @@ defineExpose({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .notice-list {
   .item {
     padding: 10px 16px;

@@ -14,7 +14,7 @@
   </List>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed, reactive, ref } from "vue";
 import { List, ListItem, ListItemMeta } from "@/components/list";
 import variables from "@/assets/styles/variables.module.scss";
@@ -55,10 +55,12 @@ const predefineColors = ref([
   "#00FF7F", //(浅绿)
   "#8A2BE2", // (紫罗兰色)
 ]);
+
 const color = reactive({ ...variables });
+
 const themeColoHandle = new ThemeColoHandle();
+
 const change = () => {
-  console.log(color);
   const { primary, success, warning, danger, error, info } = color;
   themeColoHandle.changeTheme(primary, success, warning, danger, error, info);
 };

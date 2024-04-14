@@ -1,6 +1,5 @@
 <template>
   <el-result class="error-result">
-    <!--    <template #icon> </template>-->
     <template #title>
       <span class="digit" v-for="(char, index) in code" :key="index">
         {{ char }}
@@ -16,11 +15,10 @@
   </el-result>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { useRouter } from "vue-router";
 
-const props = defineProps({
+defineProps({
   code: String,
   desc: String,
 });
@@ -29,6 +27,7 @@ const router = useRouter();
 const backGo = () => {
   router.go(-1);
 };
+
 const backHome = () => {
   router.push({ path: "/" });
 };

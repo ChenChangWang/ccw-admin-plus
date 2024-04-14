@@ -6,18 +6,20 @@
   </el-col>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {
-  ref,
   inject,
   computed,
   reactive,
   getCurrentInstance,
   onMounted,
   onUnmounted,
-  watch,
 } from "vue";
-import { formContextKey } from "@/components/query-form/constants";
+import {
+  formContextKey,
+  FormItemData,
+  QueryFormProvide,
+} from "@/components/query-form/constants";
 
 defineOptions({
   inheritAttrs: false,
@@ -26,13 +28,13 @@ defineOptions({
 
 const instance = getCurrentInstance();
 
-const formItem = reactive({
-  uid: instance.uid,
+const formItem = reactive<FormItemData>({
+  uid: instance?.uid!,
   index: null,
   visible: false,
 });
 
-const formContext = inject(formContextKey);
+const formContext = inject(formContextKey) as QueryFormProvide;
 
 const className = computed(() => {
   return ["query-form-item", formItem.visible ? "col-hide" : ""];

@@ -27,12 +27,12 @@
   </div>
 </template>
 
-<script setup>
-import { reactive, ref } from "vue";
+<script lang="ts" setup>
 import LoginForm from "./components/login-form.vue";
 import Language from "@/layout/components/header-bar/language.vue";
 import logo from "@/assets/images/logo.png";
 import { getAssetsImage } from "@/utils/util";
+
 const imgs = [
   getAssetsImage("weChat.png"),
   getAssetsImage("qq.png"),

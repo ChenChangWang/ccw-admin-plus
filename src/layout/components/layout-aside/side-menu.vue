@@ -14,8 +14,8 @@
   </div>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import Menu from "../menu/index.vue";
 import Logo from "@/components/logo/index.vue";
 import { useLayoutStore, useRouterStore } from "@/store";
@@ -24,7 +24,7 @@ defineOptions({
   name: "SideMenu",
 });
 
-const props = defineProps({
+defineProps({
   collapse: Boolean,
 });
 const layoutStore = useLayoutStore();

@@ -59,15 +59,18 @@
   </el-row>
 </template>
 
-<script setup>
-import { ref, defineEmits, reactive } from "vue";
+<script lang="ts" setup>
+import { ref, defineEmits, reactive, PropType } from "vue";
 import useLoading from "@/hooks/use-loading";
 import { stepFormSubmit } from "@/api/form";
 import Alert from "@/components/alert/index.vue";
 import { Icon } from "@iconify/vue";
-const props = defineProps({
+import { FormInstance, type FormRules } from "element-plus";
+import type { SubmitData } from "@/views/form/step-form/types.ts";
+
+defineProps({
   submitData: {
-    type: Object,
+    type: Object as PropType<SubmitData>,
     default: () => {
       return {
         payAccount: String,
@@ -79,11 +82,11 @@ const props = defineProps({
     },
   },
 });
-const ruleFormRef = ref();
-const ruleForm = reactive({
+const ruleFormRef = ref<FormInstance>();
+const ruleForm = reactive<{ password: string }>({
   password: "abc",
 });
-const rules = reactive({
+const rules = reactive<FormRules>({
   password: [
     {
       required: true,
@@ -105,10 +108,12 @@ const submit = async () => {
     setLoading(false);
   }
 };
+
 const goPrev = () => {
   emits("handleStep", "backward");
 };
-const goNext = (formEl) => {
+
+const goNext = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.validate((valid) => {
     if (valid) {

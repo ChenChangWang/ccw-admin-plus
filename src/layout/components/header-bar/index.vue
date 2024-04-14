@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { computed } from "vue";
 import { Icon } from "@iconify/vue";
 import Language from "./language.vue";

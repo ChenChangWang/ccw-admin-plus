@@ -21,12 +21,14 @@
   </el-dropdown>
 </template>
 
-<script setup>
-import { computed, defineEmits } from "vue";
+<script lang="ts" setup>
+import { computed, defineEmits, PropType } from "vue";
 import { useRoute } from "vue-router";
 import { Icon } from "@iconify/vue";
 import { routeEqual } from "@/utils/util";
 import TabsMenu from "@/layout/components/tabs-nav/tabs-menu.vue";
+import { TabsNavProps } from "@/store/modules/tabs-nav/types.ts";
+import type { OptionType } from "./types.ts";
 
 const popperOptions = {
   modifiers: [
@@ -39,7 +41,10 @@ const popperOptions = {
   ],
 };
 const props = defineProps({
-  tagList: Array,
+  tagList: {
+    type: Array as PropType<TabsNavProps[]>,
+    default: () => [],
+  },
 });
 const currentRoute = useRoute();
 const emits = defineEmits(["handleTagsOption"]);
@@ -49,7 +54,7 @@ const index = computed(() => {
     return routeEqual(item, currentRoute);
   });
 });
-const command = (type) => {
+const command = (type: OptionType) => {
   emits("handleTagsOption", type, currentRoute, currentRoute);
 };
 </script>

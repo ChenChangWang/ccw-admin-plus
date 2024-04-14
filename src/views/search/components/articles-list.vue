@@ -6,8 +6,8 @@
     />
     <template v-else>
       <List
-        :loading="loading && (!dataList || !dataList.length)"
         itemLayout="vertical"
+        :loading="loading && (!dataList || !dataList.length)"
       >
         <listItem v-for="item in dataList" :key="item.id">
           <ListItemMeta :title="item.title">
@@ -20,15 +20,15 @@
             </template>
           </ListItemMeta>
 
-          <el-text class="item-content" line-clamp="3">
+          <el-text line-clamp="3" class="item-content">
             {{ item.content }}
           </el-text>
 
           <div class="item-release">
-            <el-avatar :size="20" :src="item.logo"></el-avatar>
+            <el-avatar :src="item.logo" :size="20"></el-avatar>
             <el-link type="primary">{{ item.owner }}</el-link>
             &nbsp;发布在&nbsp;
-            <el-link :href="item.href" type="primary">{{ item.href }}</el-link>
+            <el-link type="primary" :href="item.href">{{ item.href }}</el-link>
             <span class="date">{{ item.createDate }}</span>
           </div>
 
@@ -54,7 +54,7 @@
           <Spin> </Spin>
         </template>
 
-        <template v-if="isFooter" #footer>
+        <template #footer v-if="isFooter">
           <div v-if="finished" class="finished-text">没有更多数据了</div>
           <el-button v-else :loading="loading" @click="loadMore">
             {{ loading ? "加载中..." : "加载更多" }}
@@ -65,13 +65,14 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import { List, ListItem, ListItemMeta } from "@/components/list";
 import Spin from "@/components/spin/index.vue";
+import type { ArticleData } from "@/api/search.ts";
+import type { PropType } from "vue";
 
-const props = defineProps({
+defineProps({
   finished: Boolean,
   loading: Boolean,
   isFooter: {
@@ -79,17 +80,19 @@ const props = defineProps({
     default: false,
   },
   dataList: {
-    type: Array,
+    type: Array as PropType<ArticleData[]>,
     required: true,
   },
 });
+
 const emits = defineEmits(["loadMore"]);
+
 const loadMore = () => {
   emits("loadMore");
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .articles-list {
   :deep(.list) {
     .list-footer {

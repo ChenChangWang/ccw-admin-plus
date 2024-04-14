@@ -48,13 +48,12 @@
   </el-row>
 </template>
 
-<script setup>
-import { ref, computed, provide, nextTick } from "vue";
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import VChart from "vue-echarts";
 import IntroduceItem from "./introduce-item.vue";
 import Trend from "@/components/trend/index.vue";
-import VChart from "vue-echarts";
 import { toYuan } from "@/utils/util";
-import { Icon } from "@iconify/vue";
 import { getIntroduceData } from "@/api/dashboard";
 import useLoading from "@/hooks/use-loading";
 import numeral from "numeral";
@@ -70,7 +69,7 @@ const [loading, setLoading] = useLoading(true);
 
 // =========================== 访问量EChart的options加工厂 =======================
 const visitEChartOptionsFactory = () => {
-  const data = ref([[], []]);
+  const data = ref<[string[], number[]]>([[], []]);
   const option = computed(() => {
     return {
       xAxis: {
@@ -126,7 +125,7 @@ const visitEChartOptionsFactory = () => {
 };
 // =========================== 订单量EChart的options加工厂 =======================
 const orderEChartOptionsFactory = () => {
-  const data = ref([[], []]);
+  const data = ref<[string[], number[]]>([[], []]);
   const option = computed(() => {
     return {
       xAxis: {
@@ -190,14 +189,17 @@ fetchDataList();
   > .el-col {
     margin-bottom: 14px;
   }
+
   .assimilate {
     .ratio {
       margin-left: 5px;
     }
   }
+
   .progrees {
     width: 100%;
     margin-bottom: 5px;
+
     :deep(.el-progress__text) {
       font-size: 14px !important;
     }

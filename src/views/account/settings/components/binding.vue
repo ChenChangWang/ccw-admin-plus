@@ -16,10 +16,10 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { List, ListItem, ListItemMeta } from "@/components/list";
 import { getAssetsImage } from "@/utils/util";
+
 const list = [
   {
     title: "绑定微信",

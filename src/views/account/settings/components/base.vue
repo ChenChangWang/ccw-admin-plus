@@ -66,22 +66,27 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive } from "vue";
-import { ElMessage } from "element-plus";
-import { accountUpload } from "@/api/account";
 import {
-  regionData,
-  pcaTextArr,
-  pcTextArr,
-  codeToText,
-} from "element-china-area-data";
+  ElMessage,
+  type FormInstance,
+  UploadFile,
+  UploadFiles,
+  UploadProgressEvent,
+  UploadRawFile,
+  UploadRequestOptions,
+} from "element-plus";
+import { accountUpload } from "@/api/account";
+import { pcTextArr } from "element-china-area-data";
 import { Icon } from "@iconify/vue";
+import type { UploadAjaxError } from "element-plus/es/components/upload/src/ajax";
+
 const { userInfo } = defineProps({
   userInfo: { type: Object, default: () => {} },
 });
 const imageUrl = ref(userInfo.avatar);
-const infoFormRef = ref();
+const infoFormRef = ref<FormInstance>();
 const userForm = reactive({
   name: userInfo.name,
   email: userInfo.email,
@@ -102,7 +107,7 @@ const rules = reactive({
 });
 
 // =========================== 头像上传 =======================
-const uploadAction = async (option) => {
+const uploadAction = async (option: UploadRequestOptions) => {
   let param = new FormData();
   param.append("file", option.file);
   const onUploadProgress = (evt) => {
@@ -116,22 +121,38 @@ const uploadAction = async (option) => {
     });
     option.onSuccess(res);
   } catch (error) {
-    option.onError(error);
+    option.onError(error as UploadAjaxError);
   }
 };
-const success = (response, uploadFile, uploadFiles) => {
+
+const success = (
+  response: any,
+  uploadFile: UploadFile,
+  uploadFiles: UploadFiles,
+) => {
   console.log("success", response, uploadFile, uploadFiles);
 
   imageUrl.value = response.data.url;
   ElMessage.success("上传成功！");
 };
-const error = (error, uploadFile, uploadFiles) => {
+
+const error = (
+  error: Error,
+  uploadFile: UploadFile,
+  uploadFiles: UploadFiles,
+) => {
   console.log("error", error, uploadFile, uploadFiles);
 };
-const progress = (evt, uploadFile, uploadFiles) => {
+
+const progress = (
+  evt: UploadProgressEvent,
+  uploadFile: UploadFile,
+  uploadFiles: UploadFiles,
+) => {
   console.log("progress", evt, uploadFile, uploadFiles);
 };
-const beforeUpload = (file) => {
+
+const beforeUpload = (file: UploadRawFile) => {
   const type = ["image/jpeg", "image/jpg", "image/png"];
   if (type.indexOf(file.type) === -1) {
     ElMessage.error("上传文件必须为jpeg、jpg、png类型！");
@@ -145,7 +166,7 @@ const beforeUpload = (file) => {
 
 // =========================== 表单 =======================
 
-const submitForm = async (formEl) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
@@ -156,7 +177,7 @@ const submitForm = async (formEl) => {
   });
 };
 
-const resetForm = (formEl) => {
+const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };

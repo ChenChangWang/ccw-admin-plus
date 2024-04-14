@@ -6,11 +6,11 @@
   />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import ProjectsList from "@/views/search/components/projects-list.vue";
 import useLoading from "@/hooks/use-loading";
-import { getProjectList } from "@/api/search";
+import { getProjectList, ProjectData } from "@/api/search";
 
 const attarSpan = {
   xs: 24,
@@ -19,8 +19,9 @@ const attarSpan = {
   lg: 12,
   xl: 8,
 };
-const dataList = ref([]);
+const dataList = ref<ProjectData[]>([]);
 const [loading, setLoading] = useLoading(false);
+
 const fetchDataList = async () => {
   setLoading(true);
   try {

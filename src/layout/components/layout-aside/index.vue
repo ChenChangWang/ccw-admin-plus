@@ -24,7 +24,7 @@
   </el-drawer>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { onUnmounted, ref } from "vue";
 import SideMenu from "./side-menu.vue";
 import bus from "@/utils/bus";
@@ -37,7 +37,7 @@ const toggleDrawerMenu = () => {
   drawerVisible.value = !drawerVisible.value;
 };
 
-bus.on("setDrawerMenuVisible", (val) => {
+bus.on("setDrawerMenuVisible", (val:boolean) => {
   drawerVisible.value = val;
 });
 

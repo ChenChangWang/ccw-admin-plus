@@ -62,20 +62,23 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import numeral from "numeral";
 import { Icon } from "@iconify/vue";
 import Spin from "@/components/spin/index.vue";
-const props = defineProps({
+import type { ApplicationData } from "@/api/search.ts";
+import type { PropType } from "vue";
+
+defineProps({
   loading: Boolean,
   dataList: {
-    type: Array,
+    type: Array as PropType<ApplicationData[]>,
     required: true,
   },
   attarSpan: Object,
 });
-const formatWan = (val) => {
+
+const formatWan = (val: number) => {
   if (!val || Number.isNaN(val)) {
     return "";
   }

@@ -105,18 +105,30 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { reactive, ref } from "vue";
 import { useResponsive } from "@/hooks/use-responsive";
 import { breakpointQueryMap } from "@/utils/media-query-listener";
 import { getAssetsImage } from "@/utils/util";
+import type { FormInstance, FormProps, FormRules } from "element-plus";
 
 defineOptions({
   name: "BasicForm", //不命名组件，keep-alive的include不属性生效
 });
-const labelPosition = ref("right");
-const ruleFormRef = ref();
-const ruleForm = reactive({
+
+interface RuleForm {
+  title: string;
+  content: string;
+  date: string;
+  position: string;
+  desc: string;
+  record: string;
+  participants: typeof userOptions;
+}
+
+const labelPosition = ref<FormProps["labelPosition"]>("right");
+const ruleFormRef = ref<FormInstance>();
+const ruleForm = reactive<RuleForm>({
   title: "",
   content: "",
   date: "",
@@ -125,7 +137,7 @@ const ruleForm = reactive({
   record: "1",
   participants: [],
 });
-const rules = reactive({
+const rules = reactive<FormRules>({
   title: [{ required: true, message: "请输入标题", trigger: "blur" }],
   content: [{ required: true, message: "请输入内容", trigger: "blur" }],
   date: [
@@ -200,7 +212,7 @@ useResponsive(
   { query: breakpointQueryMap.xs },
 );
 
-const submitForm = async (formEl) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {

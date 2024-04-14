@@ -3,8 +3,8 @@
     <RouterView />
   </el-config-provider>
 </template>
-<script setup>
-import { RouterLink, RouterView } from "vue-router";
+<script lang="ts" setup>
+import { RouterView } from "vue-router";
 import zhCn from "element-plus/dist/locale/zh-cn.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import { computed, provide } from "vue";

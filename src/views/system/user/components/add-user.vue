@@ -108,14 +108,14 @@
   </el-drawer>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, reactive, computed } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage, FormInstance, FormRules } from "element-plus";
 import { pcTextArr } from "element-china-area-data";
 import RoleSelector from "./role-selector.vue";
 import statusOptions from "../statusOptions";
 
-const ruleFormRef = ref();
+const ruleFormRef = ref<FormInstance>();
 const model = defineModel();
 const dialog = computed({
   get: () => model.value,
@@ -135,14 +135,14 @@ const form = reactive({
   birthday: "",
   introduction: "",
 });
-const rules = reactive({
+const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   phone: [{ required: true, message: "请输入手机号", trigger: "blur" }],
   email: [{ required: true, message: "请输入邮箱", trigger: "blur" }],
   loginUser: [{ required: true, message: "请输入登录账号", trigger: "blur" }],
 });
 
-const submitForm = async (formEl) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {

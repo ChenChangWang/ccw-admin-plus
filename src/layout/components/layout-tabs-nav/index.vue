@@ -6,8 +6,8 @@
   </div>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import TabsNav from "../tabs-nav/index.vue";
 import { useLayoutStore } from "@/store";
 

@@ -39,12 +39,13 @@
   </el-drawer>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted, watch } from "vue";
-import { ElMessage } from "element-plus";
+<script lang="ts" setup>
+import { ref, reactive, computed, watch, PropType } from "vue";
+import { ElMessage, FormInstance, FormRules } from "element-plus";
+import type { RoleData } from "@/api/system.ts";
 
-const props = defineProps({ current: Object });
-const ruleFormRef = ref();
+const props = defineProps({ current: Object as PropType<RoleData> });
+const ruleFormRef = ref<FormInstance>();
 const model = defineModel();
 const dialog = computed({
   get: () => model.value,
@@ -57,8 +58,7 @@ let form = reactive({
   explain: "",
   isDefault: false,
 });
-
-const rules = reactive({
+const rules = reactive<FormRules>({
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
 });
 
@@ -68,11 +68,11 @@ watch([() => props.current, () => dialog.value], () => {
   }
   resetForm();
   for (let key in form) {
-    form[key] = props.current[key];
+    form[key] = props.current?.[key];
   }
 });
 
-const submitForm = async (formEl) => {
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {

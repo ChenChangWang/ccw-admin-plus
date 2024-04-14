@@ -25,8 +25,9 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, nextTick } from "vue";
+
 const inputValue = ref("");
 const dynamicTags = ref([
   "极客精神",
@@ -39,7 +40,7 @@ const dynamicTags = ref([
 const inputVisible = ref(false);
 const InputRef = ref();
 
-const handleClose = (tag) => {
+const handleClose = (tag:string) => {
   dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1);
 };
 

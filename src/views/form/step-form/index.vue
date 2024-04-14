@@ -62,19 +62,21 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import WriteInfo from "./components/write-info.vue";
 import ConfirmInfo from "./components/confirm-info.vue";
 import Success from "./components/success.vue";
+import { HandleType, SubmitData } from "./types.ts";
 
 defineOptions({
   name: "StepForm", //不命名组件，keep-alive的include不属性生效
 });
-const active = ref(1);
-const submitData = ref({});
 
-const handleStep = (type, data) => {
+const active = ref(1);
+const submitData = ref<SubmitData>({});
+
+const handleStep = (type: HandleType, data: SubmitData) => {
   if (type === "forward") {
     submitData.value = { ...submitData.value, ...data };
     active.value += 1;

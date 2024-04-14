@@ -2,7 +2,7 @@
   <ErrorResult code="403" desc="对不起，您没有访问该资源的权限" />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import ErrorResult from "../components/error-result.vue";
 
 defineOptions({

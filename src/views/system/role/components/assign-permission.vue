@@ -40,17 +40,17 @@
   </el-dialog>
 </template>
 
-<script setup>
-import { ref, computed, watch, nextTick } from "vue";
-import { getMenuList } from "@/api/system";
+<script lang="ts" setup>
+import { ref, computed, watch, nextTick, PropType } from "vue";
+import {getMenuList, RoleData, SystemMenuData} from "@/api/system";
 import useLoading from "@/hooks/use-loading";
-import { ElMessage } from "element-plus";
+import { ElMessage, TreeInstance } from "element-plus";
 
 const props = defineProps({
-  current: Object,
+  current: Object as PropType<RoleData>,
 });
-const menuData = ref([]);
-const treeRef = ref(); //tree的ref
+const menuData = ref<SystemMenuData[]>([]);
+const treeRef = ref<TreeInstance>(); //tree的ref
 const isExpandAll = ref(true); //是否展开所有
 
 const model = defineModel();
@@ -70,6 +70,7 @@ const fetchData = async () => {
     setLoading(false);
   }
 };
+
 fetchData();
 
 //数据
@@ -84,7 +85,7 @@ watch([() => props.current, () => dialog.value], () => {
 
 //全部勾选
 const checkedAll = () => {
-  treeRef.value?.setCheckedNodes(menuData.value);
+  treeRef.value?.setCheckedNodes(menuData.value as any[]);
 };
 
 /**
@@ -93,16 +94,16 @@ const checkedAll = () => {
 function expandCollapseHandle() {
   // 全部折叠
   if (isExpandAll.value) {
-    Object.values(treeRef.value.store.nodesMap).forEach((v) => v.collapse());
+    Object.values(treeRef.value?.store.nodesMap).forEach((v) => v.collapse());
   } else {
     // 全部展开
-    Object.values(treeRef.value.store.nodesMap).forEach((v) => v.expand());
+    Object.values(treeRef.value?.store.nodesMap).forEach((v) => v.expand());
   }
   isExpandAll.value = !isExpandAll.value;
 }
 
 const submit = () => {
-  const keys = treeRef.value.getCheckedKeys();
+  const keys = treeRef.value?.getCheckedKeys();
   console.log("keys", keys);
   ElMessage({
     type: "error",

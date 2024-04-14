@@ -25,8 +25,7 @@
   </el-card>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 
 defineOptions({

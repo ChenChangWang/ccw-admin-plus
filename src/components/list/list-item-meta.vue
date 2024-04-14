@@ -19,9 +19,8 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from "vue";
-const props = defineProps({
+<script lang="ts" setup>
+ defineProps({
   avatar: {
     type: String,
     default: "",

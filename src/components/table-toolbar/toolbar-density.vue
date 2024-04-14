@@ -16,10 +16,11 @@
   </el-dropdown>
 </template>
 
-<script setup>
-import { computed, ref } from "vue";
-import { Icon } from "@iconify/vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import type { ComponentSize } from "element-plus";
+
 const { t } = useI18n();
 const mode = defineModel();
 const size = computed({
@@ -42,7 +43,7 @@ const densityOptions = computed(() => [
     label: t("table.density.small"),
   },
 ]);
-const command = (value) => {
+const command = (value: ComponentSize) => {
   size.value = value;
 };
 </script>
